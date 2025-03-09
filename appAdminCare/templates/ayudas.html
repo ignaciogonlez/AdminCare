@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Ayudas - TFG{% endblock %}
+{% block content %}
+<h1>Página de Ayudas</h1>
+<ul>
+  <li><a href="{% url 'ayuda_experiencia_familiar' %}">Información sobre experiencia familiar</a></li>
+  <li><a href="{% url 'ayuda_autonomica' %}">Información sobre ayuda autonómica</a></li>
+  <li><a href="{% url 'ayuda_estatal' %}">Información sobre ayuda estatal</a></li>
+  <li><a href="{% url 'ayuda_privada' %}">Información sobre ayudas privadas</a></li>
+</ul>
+{% endblock %}

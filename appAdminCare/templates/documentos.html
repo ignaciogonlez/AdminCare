@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Documentos - TFG{% endblock %}
+
+{% block content %}
+<h1>Gestión de Documentos</h1>
+
+<!-- Formulario para subir documentos -->
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <label for="title">Título del Documento:</label>
+  <input type="text" id="title" name="title" required />
+  
+  <label for="uploaded_file">Selecciona un archivo:</label>
+  <input type="file" id="uploaded_file" name="uploaded_file" required />
+  
+  <button type="submit">Subir</button>
+</form>
+
+<hr/>
+
+<!-- Listado de documentos subidos -->
+<h2>Documentos subidos:</h2>
+<ul>
+  {% for doc in documents %}
+    <li>
+      <strong>{{ doc.title }}</strong> - {{ doc.uploaded_at|date:"d/m/Y H:i" }}
+      <br/>
+      <!-- Enlazar el archivo para descarga o visualización -->
+      <a href="{{ doc.file.url }}" target="_blank">Ver/Descargar</a>
+    </li>
+  {% empty %}
+    <li>No hay documentos subidos todavía.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

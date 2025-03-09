@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio - TFG{% endblock %}
+
+{% block content %}
+<h1>Bienvenido/a a la plataforma de Gestión de Documentos</h1>
+<p>La burocracia administrativa supone una carga adicional para las familias de personas con enfermedades raras y dependencia...</p>
+<p>Este TFG tiene como objetivo el desarrollo de un sistema web que facilite esta gestión.</p>
+
+<!-- Índice con enlaces a las secciones principales -->
+<ul>
+  <li><a href="{% url 'faqs' %}">FAQs</a></li>
+  <li><a href="{% url 'documentos' %}">Gestión de Documentos</a></li>
+  <li><a href="{% url 'ayudas' %}">Página de Ayudas</a></li>
+</ul>
+{% endblock %}

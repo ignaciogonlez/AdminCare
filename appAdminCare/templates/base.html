@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}TFG - Gestión de Documentos{% endblock %}</title>
+  <!-- Aquí puedes incluir tu hoja de estilos principal -->
+  <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+
+  <!-- Menú de navegación fijo -->
+  <nav>
+    <ul>
+      <li><a href="{% url 'index' %}">Inicio</a></li>
+      <li><a href="{% url 'faqs' %}">FAQs</a></li>
+      <li><a href="{% url 'documentos' %}">Gestión de Documentos</a></li>
+      <li><a href="{% url 'ayudas' %}">Página de Ayudas</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    {% block content %}
+    <!-- Contenido de cada página -->
+    {% endblock %}
+  </main>
+
+</body>
+</html>
