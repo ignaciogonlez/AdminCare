@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Cerrar Sesión{% endblock %}
+
+{% block content %}
+<h1>¿Deseas cerrar sesión?</h1>
+
+<!-- Si el usuario es staff, mostramos botón de admin -->
+{% if user.is_staff %}
+  <p>Antes de cerrar sesión, puedes acceder al 
+    <a href="{% url 'admin_panel' %}">Panel de Administración</a>.
+  </p>
+{% endif %}
+
+<form method="POST">
+  {% csrf_token %}
+  <button type="submit">Confirmar Logout</button>
+</form>
+{% endblock %}

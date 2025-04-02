@@ -1,34 +1,36 @@
 {% extends 'base.html' %}
-{% load static %}
-
 {% block title %}Gestión de Documentos - TFG{% endblock %}
 
 {% block content %}
 <h1>Gestión de Documentos</h1>
 
+<!-- Formulario de búsqueda -->
+<form method="GET" style="margin-bottom: 1rem;">
+  <input type="text" name="q" placeholder="Buscar por título..." value="{{ query|default_if_none:'' }}">
+  <button type="submit">Buscar</button>
+</form>
+
 <!-- Formulario para subir documentos -->
 <form method="POST" enctype="multipart/form-data">
   {% csrf_token %}
-  <label for="title">Título del Documento:</label>
-  <input type="text" id="title" name="title" required />
-  
-  <label for="uploaded_file">Selecciona un archivo:</label>
-  <input type="file" id="uploaded_file" name="uploaded_file" required />
-  
+  {{ form.as_p }}
   <button type="submit">Subir</button>
 </form>
 
 <hr/>
 
 <!-- Listado de documentos subidos -->
-<h2>Documentos subidos:</h2>
+<h2>Mis documentos:</h2>
 <ul>
   {% for doc in documents %}
     <li>
       <strong>{{ doc.title }}</strong> - {{ doc.uploaded_at|date:"d/m/Y H:i" }}
       <br/>
-      <!-- Enlazar el archivo para descarga o visualización -->
       <a href="{{ doc.file.url }}" target="_blank">Ver/Descargar</a>
+      <form action="{% url 'eliminar_documento' doc.id %}" method="POST" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Eliminar</button>
+      </form>
     </li>
   {% empty %}
     <li>No hay documentos subidos todavía.</li>

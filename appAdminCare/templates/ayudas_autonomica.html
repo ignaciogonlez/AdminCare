@@ -1,6 +1,34 @@
 {% extends 'base.html' %}
-{% block title %}Ayudas autonómicas - TFG{% endblock %}
+{% block title %}Ayuda Autonómica{% endblock %}
+
 {% block content %}
-<h1>Ayudas autonómicas</h1>
-<p>Informacion a incluir</p>
+<h1>Ayuda: Autonómica</h1>
+<p>Aquí se listan los documentos que tengan el tag "autonomica".</p>
+
+{% if docs %}
+  {% for d in docs %}
+    <div class="card">
+      <h3>{{ d.title }}</h3>
+      
+      {% if d.summary %}
+        <p><strong>Resumen:</strong> {{ d.summary }}</p>
+      {% endif %}
+      
+      {% if d.file %}
+        <!-- Enlace para ver/descargar el archivo subido -->
+        <p>
+          <a href="{{ d.file.url }}" target="_blank">Descargar/Ver Archivo</a>
+        </p>
+      {% endif %}
+      
+      <p><strong>Tags:</strong> 
+        {% for t in d.tags.all %}
+          {{ t.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>No hay documentos disponibles para esta categoría.</p>
+{% endif %}
 {% endblock %}

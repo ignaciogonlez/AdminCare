@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+<h1>Panel de Administración</h1>
+
+<!-- Sección HelpDocuments -->
+<h2>Gestionar Documentos de Ayuda</h2>
+<ul>
+  {% for hd in help_docs %}
+    <li>
+      <strong>{{ hd.title }}</strong>
+      <!-- Si hay archivo, mostrar enlace -->
+      {% if hd.file %}
+        <br/><a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
+      {% endif %}
+      <form method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_helpdoc_id" value="{{ hd.id }}">
+        <button type="submit">Eliminar</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ help_doc_form.as_p }}
+  <button type="submit" name="create_helpdoc">Crear Documento de Ayuda</button>
+</form>
+
+<hr/>
+
+<!-- Sección Tags -->
+<h2>Gestionar Tags</h2>
+<ul class="tags-list">
+  {% for tg in tags %}
+    <li>
+      {{ tg.name }}
+      <form method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_tag_id" value="{{ tg.id }}">
+        <button type="submit">Eliminar</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+<form method="POST">
+  {% csrf_token %}
+  {{ tag_form.as_p }}
+  <button type="submit" name="create_tag">Crear Tag</button>
+</form>
+
+<hr/>
+
+<!-- Sección FAQs -->
+<h2>Gestionar FAQs</h2>
+<ul>
+  {% for faq in faqs_list %}
+    <li>
+      <strong>{{ faq.question }}</strong>
+      <br/>{{ faq.answer }}
+      <form method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_faq_id" value="{{ faq.id }}">
+        <button type="submit">Eliminar</button>
+      </form>
+    </li>
+    <hr/>
+  {% endfor %}
+</ul>
+<form method="POST">
+  {% csrf_token %}
+  {{ faq_form.as_p }}
+  <button type="submit" name="create_faq">Crear FAQ</button>
+</form>
+
+<hr/>
+
+<!-- Botón para cerrar sesión -->
+<div style="margin-top: 2rem;">
+  <a href="{% url 'logout' %}" class="btn">Cerrar Sesión</a>
+</div>
+
+{% endblock %}

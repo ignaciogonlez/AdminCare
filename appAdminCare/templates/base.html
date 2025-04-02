@@ -1,30 +1,56 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %}TFG - Gestión de Documentos{% endblock %}</title>
-  <!-- Aquí puedes incluir tu hoja de estilos principal -->
+  <meta charset="UTF-8">
+  <title>{% block title %}Mi Proyecto{% endblock %}</title>
+  {% load static %}
   <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 <body>
+  <header>
+    <!-- Botón del menú “hamburger” (arriba a la izquierda) -->
+    <button id="menuToggle" class="menu-button">☰</button>
 
-  <!-- Menú de navegación fijo -->
-  <nav>
-    <ul>
-      <li><a href="{% url 'index' %}">Inicio</a></li>
-      <li><a href="{% url 'faqs' %}">FAQs</a></li>
-      <li><a href="{% url 'documentos' %}">Gestión de Documentos</a></li>
-      <li><a href="{% url 'ayudas' %}">Página de Ayudas</a></li>
-    </ul>
-  </nav>
+    <!-- Menú desplegable -->
+    <nav id="menu" class="hidden">
+      <ul>
+        <li><a href="{% url 'index' %}">Inicio</a></li>
+        <li><a href="{% url 'faqs' %}">FAQs</a></li>
+        <li><a href="{% url 'ayudas' %}">Ayudas</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'documentos' %}">Documentos</a></li>
+        {% endif %}
+      </ul>
+    </nav>
 
-  <main>
+    <!-- Botón de Login/Logout (arriba a la derecha) -->
+    {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}" class="login-button">Logout</a>
+      {% if user.is_staff %}
+        <a href="{% url 'admin_panel' %}" class="login-button">Admin</a>
+      {% endif %}
+    {% else %}
+      <a href="{% url 'login' %}" class="login-button">Login</a>
+    {% endif %}
+  </header>
+
+  <main class="container">
     {% block content %}
-    <!-- Contenido de cada página -->
     {% endblock %}
   </main>
 
+  <footer>
+    <p>© 2025 - Aplicacion adminCare - en colaboración con Apapachando</p>
+  </footer>
+
+  <!-- Script para desplegar/ocultar el menú -->
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const menu = document.getElementById('menu');
+
+    menuToggle.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+    });
+  </script>
 </body>
 </html>

@@ -2,14 +2,12 @@
 /* 1. Variables y Reset          */
 /* ============================= */
 :root {
-  /* Paleta de colores */
   --color-primary: #2a9d8f;
   --color-secondary: #264653;
   --color-accent: #e9c46a;
   --color-background: #f5f5f5;
   --color-text: #333;
 
-  /* Tipografía y tamaños */
   --font-size-base: 16px;
   --font-family-base: "Open Sans", Arial, sans-serif;
 }
@@ -28,6 +26,7 @@ html {
   font-size: var(--font-size-base);
   scroll-behavior: smooth;
 }
+
 body {
   font-family: var(--font-family-base);
   background: var(--color-background);
@@ -58,11 +57,31 @@ header {
   background-color: var(--color-primary);
   border-bottom: 4px solid var(--color-secondary);
   padding: 1rem;
+  position: relative; /* Para posicionar el botón de login */
 }
-header h1 {
+
+/* El botón hamburguer (SIEMPRE visible) */
+.menu-button {
+  display: inline-block;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  margin: 0.5rem;
   color: #fff;
-  font-size: 1.25rem;
-  text-align: center;
+}
+
+/* Botón de Login/Logout (arriba a la derecha) */
+.login-button {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  background: var(--color-secondary);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
 }
 
 /* Menú de navegación (mobile-first) */
@@ -72,7 +91,7 @@ nav {
 nav ul {
   list-style: none;
   display: flex;
-  flex-direction: column; /* Mobile primero: items en columna */
+  flex-direction: column; /* Vertical por defecto */
   gap: 0.75rem;
   padding: 1rem;
 }
@@ -85,7 +104,14 @@ nav li a:hover {
   opacity: 0.8;
 }
 
-/* Para pantallas más grandes */
+/* Clase para ocultar el menú con display: none; */
+.hidden {
+  display: none;
+}
+
+/* Pantallas grandes: si quieres conservar un menú horizontal, lo dejas. 
+   Si quieres que el menú siempre sea vertical y controlado por el hamburger,
+   puedes eliminar estas líneas. */
 @media (min-width: 768px) {
   nav ul {
     flex-direction: row; 
@@ -94,6 +120,7 @@ nav li a:hover {
   nav ul li {
     margin: 0 1rem;
   }
+  /* IMPORTANTE: No se oculta el .menu-button en pantallas grandes */
 }
 
 /* ============================= */
@@ -116,7 +143,7 @@ section h2 {
   color: var(--color-secondary);
 }
 
-/* Tarjetas (cards) para mostrar contenido */
+/* Tarjetas (cards) */
 .card {
   background: #fff;
   border: 1px solid #ddd;
@@ -151,6 +178,7 @@ form label {
 }
 form input[type="text"],
 form input[type="file"],
+form input[type="password"],
 form select,
 form textarea {
   padding: 0.5rem;
@@ -173,7 +201,7 @@ form button:hover {
 }
 
 /* ============================= */
-/* 7. Botones y enlaces "button" */
+/* 7. Botones                    */
 /* ============================= */
 .btn {
   display: inline-block;
@@ -197,6 +225,21 @@ form button:hover {
 }
 
 /* ============================= */
+/* 7.1 Estilos específicos para el panel de administración */
+/* ============================= */
+.tags-list {
+  list-style: none;
+  padding: 0;
+}
+.tags-list li {
+  margin-bottom: 0.5rem;
+}
+.tags-list li form {
+  display: inline-block;
+  margin-left: 1rem;
+}
+
+/* ============================= */
 /* 8. Footer                     */
 /* ============================= */
 footer {
@@ -210,14 +253,8 @@ footer {
 /* ============================= */
 /* 9. Media queries extras       */
 /* ============================= */
-/* Ejemplo: Ajustamos container en pantallas > 992px */
 @media (min-width: 992px) {
   .container {
     width: 85%;
   }
 }
-
-/* ============================= */
-/* FIN                           */
-/* ============================= */
-

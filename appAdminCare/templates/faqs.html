@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}FAQs - TFG{% endblock %}
+{% block title %}FAQs{% endblock %}
+
 {% block content %}
 <h1>Preguntas Frecuentes (FAQs)</h1>
-<p>Aquí puedes listar las preguntas frecuentes y sus respuestas.</p>
 
-<!-- Ejemplo de FAQ -->
-<div>
-  <h3>¿Cómo puedo subir un documento?</h3>
-  <p>En la sección "Gestión de Documentos", encontrarás un formulario para subir tus archivos.</p>
-</div>
-
-<!-- Añade más FAQs según consideres necesario -->
+<ul>
+  {% for f in faqs %}
+    <li>
+      <strong>{{ f.question }}</strong><br>
+      {{ f.answer }}
+    </li>
+    <hr>
+  {% endfor %}
+</ul>
 {% endblock %}
