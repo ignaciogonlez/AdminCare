@@ -1,5 +1,7 @@
 media/documents/*
 media/help_docs/*
+media/documents/*
+media/documents_covers/*
 
 # Ignorar entornos virtuales de Python
 venv/

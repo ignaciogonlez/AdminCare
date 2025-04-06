@@ -9,6 +9,11 @@ from .forms import (
     DocumentForm, FAQForm, HelpDocumentForm, TagForm, UserRegisterForm
 )
 
+# <-- NUEVO: importamos PyMuPDF y herramientas para manejar archivos en memoria
+import fitz
+from django.core.files.base import ContentFile
+import os
+
 
 def index(request):
     """Página de Inicio: Explicación del proyecto y enlaces a las secciones."""
@@ -19,6 +24,42 @@ def faqs(request):
     """ Muestra únicamente la lista de FAQs, sin permitir modificaciones. """
     faqs_list = FAQ.objects.all()
     return render(request, 'faqs.html', {'faqs': faqs_list})
+
+
+# <-- NUEVO: Función para generar la portada de un PDF usando PyMuPDF
+def generar_portada_pdf(document):
+    """
+    Recibe una instancia de Document.
+    Si 'document.file' es un PDF, extrae la primera página y la guarda en 'document.cover'.
+    """
+    # Verificar la extensión (puedes refinar este chequeo según tu proyecto)
+    if not document.file.name.lower().endswith('.pdf'):
+        return  # Salir si no es un PDF
+
+    # Abrir el PDF con PyMuPDF
+    pdf_path = document.file.path  # ruta en disco al archivo subido
+    doc = fitz.open(pdf_path)
+
+    # Asegurarnos de que tenga al menos 1 página
+    if doc.page_count < 1:
+        doc.close()
+        return
+
+    # Cargar la primera página
+    page = doc.load_page(0)
+    # Obtener pixmap (imagen) de esa página
+    pix = page.get_pixmap()
+    doc.close()
+
+    # Convertir el pixmap en bytes (formato PNG)
+    portada_bytes = pix.tobytes("png")
+
+    # Crear un nombre para la portada basado en el título o ID
+    cover_filename = f"{os.path.splitext(os.path.basename(document.file.name))[0]}_cover.png"
+
+    # Guardar la portada en el campo 'cover' del modelo
+    document.cover.save(cover_filename, ContentFile(portada_bytes))
+    document.save()
 
 
 @login_required
@@ -35,6 +76,10 @@ def documentos(request):
             new_doc = form.save(commit=False)
             new_doc.user = request.user
             new_doc.save()
+            
+            # <-- NUEVO: Generar portada del PDF (si aplica)
+            generar_portada_pdf(new_doc)
+
             messages.success(request, "Documento subido correctamente.")
             return redirect('documentos')
     else:
@@ -194,7 +239,6 @@ def admin_panel(request):
                 messages.success(request, "Documento de ayuda creado.")
                 return redirect('admin_panel')
 
-
         # 2) Eliminar HelpDocument
         if 'delete_helpdoc_id' in request.POST:
             hd_id = request.POST['delete_helpdoc_id']
@@ -244,4 +288,3 @@ def admin_panel(request):
         'faq_form': faq_form,
     }
     return render(request, 'admin_panel.html', context)
-

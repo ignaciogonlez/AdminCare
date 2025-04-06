@@ -11,6 +11,10 @@ class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to='documents/', verbose_name="Archivo", help_text="Sube el archivo")
     
+    # <-- NUEVO: campo para almacenar la portada (thumbnail) de tu PDF.
+    # Este campo se llena cuando se guarda el modelo y detecta que es un PDF.
+    cover = models.ImageField(upload_to='documents_covers/', null=True, blank=True, verbose_name="Portada")
+
     def __str__(self):
         return self.title
 
@@ -35,6 +39,6 @@ class HelpDocument(models.Model):
     summary = models.TextField(blank=True, null=True, verbose_name="Resumen", help_text="Escribe un breve resumen del documento")
     file = models.FileField(upload_to='help_docs/', blank=True, null=True, verbose_name="Archivo PDF", help_text="Sube el archivo en PDF")
     tags = models.ManyToManyField(Tag, related_name='help_documents', blank=True, verbose_name="Etiquetas")
-    
+
     def __str__(self):
         return self.title

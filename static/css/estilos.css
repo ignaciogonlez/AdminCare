@@ -258,3 +258,57 @@ footer {
     width: 85%;
   }
 }
+
+/* ============================= */
+/* 10. Ajuste para la imagen de portada  */
+/* ============================= */
+.doc-preview img {
+  max-width: 150px;  /* Ajusta este valor a tu preferencia */
+  width: 100%;       /* Para mantener comportamiento responsive */
+  height: auto;      /* Mantiene la proporción de la imagen */
+  display: block;
+  margin: 0.5rem 0;
+}
+
+/* ============================= */
+/* 11. Estilos para la lista de documentos */
+/* ============================= */
+.documents-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.document-item {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  flex: 1 1 300px;  /* Ajusta el ancho mínimo según tus necesidades */
+  display: flex;
+  flex-direction: column; /* Imagen arriba y detalles debajo */
+  align-items: center;
+}
+
+/* Contenedor para título/fecha y papelera */
+.doc-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Espacio reducido entre elementos */
+  margin-top: 0.5rem;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+/* Ajuste de la fuente para el título y la fecha */
+.doc-info {
+  font-size: 0.9rem;
+}
+
+/* Que el botón de eliminar no ocupe todo el ancho */
+.doc-actions {
+  flex-shrink: 0;
+}
