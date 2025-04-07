@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'clave_por_defecto_segura')
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'https://admincare.onrender.com',  # tu dominio de Render
+    'admincare.onrender.com',  # tu dominio de Render
     '127.0.0.1',              # si usas localhost en desarrollo
 ]
 
