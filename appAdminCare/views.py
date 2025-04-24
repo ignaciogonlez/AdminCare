@@ -37,8 +37,11 @@ def generar_portada_pdf(document):
         return  # Salir si no es un PDF
 
     # Abrir el PDF con PyMuPDF
-    pdf_path = document.file.path  # ruta en disco al archivo subido
-    doc = fitz.open(pdf_path)
+    # pdf_path = document.file.path  # ruta en disco al archivo subido
+    # doc = fitz.open(pdf_path)
+    data = document.file.read()  # leer el archivo en memoria
+    doc = fitz.Document(stream=data)
+
 
     # Asegurarnos de que tenga al menos 1 página
     if doc.page_count < 1:
@@ -56,7 +59,7 @@ def generar_portada_pdf(document):
 
     # Crear un nombre para la portada basado en el título o ID
     cover_filename = f"{os.path.splitext(os.path.basename(document.file.name))[0]}_cover.png"
-
+    print(f"Portada generada: {cover_filename}")
     # Guardar la portada en el campo 'cover' del modelo
     document.cover.save(cover_filename, ContentFile(portada_bytes))
     document.save()
