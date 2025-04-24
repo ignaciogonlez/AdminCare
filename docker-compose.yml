@@ -1,25 +1,45 @@
-# sin la clave version: (opcional)
+version: "3.9"
+
 services:
   web:
     build: .
     container_name: admincare_web
+
+    # Carga todas las variables del .env y las sobreescribe si definimos más abajo
     env_file:
       - .env
+
+    # Variables que puede que NO estén en .env cuando quieras apuntar a AWS
+    environment:
+      # Activa el bloque S3 en settings.py
+      - USE_S3=${USE_S3:-True}
+
+      # Solo la necesitas en local; en AWS déjala vacía
+      - AWS_S3_ENDPOINT_URL=${AWS_S3_ENDPOINT_URL:-}
+
+    volumes:
+      - .:/app           # hot-reload de código está bien en local
+
     ports:
       - "8000:8000"
+
+    # Solo dependemos de LocalStack cuando usamos el perfil "local"
     depends_on:
-      - localstack
+      localstack:
+        condition: service_started
+        required: false
+
     command: >
       sh -c "
       python manage.py migrate &&
       python manage.py collectstatic --noinput &&
       gunicorn adminCare.wsgi:application --bind 0.0.0.0:8000"
-    volumes:
-      - .:/app
 
+  # ---------- Solo para DESARROLLO LOCAL ----------
   localstack:
     image: localstack/localstack:3
     container_name: localstack
+    profiles: ["local"]     # ← así no se crea si no pides el perfil
     environment:
       - SERVICES=s3
       - DEBUG=1

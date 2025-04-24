@@ -88,33 +88,30 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# ————————————————————————————————
-# Medios (uploads).  Dos modos:
-# 1) Local (por defecto)
-# 2) S3  (si USE_S3=True)
-# ————————————————————————————————
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 USE_S3 = os.getenv('USE_S3') == 'True'
+
 if USE_S3:
-    # Credenciales / endpoint
-    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    # ---------- S3 ----------
+    AWS_ACCESS_KEY_ID       = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY   = os.getenv('AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-    AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME', 'us-east-1')
-    AWS_S3_ENDPOINT_URL = os.getenv('AWS_S3_ENDPOINT_URL')       # http://localstack:4566  ó  https://s3.eu-central-1.amazonaws.com
-    AWS_S3_ADDRESSING_STYLE = os.getenv('AWS_S3_ADDRESSING_STYLE', 'auto')
+    AWS_S3_REGION_NAME      = os.getenv('AWS_S3_REGION_NAME', 'eu-west-3')
+    AWS_S3_ADDRESSING_STYLE = os.getenv('AWS_S3_ADDRESSING_STYLE', 'virtual')
 
-    # Recom. de django‑storages
-    AWS_DEFAULT_ACL = None
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_QUERYSTRING_AUTH = False      # URLs limpias
-    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    # Config recomendada por django-storages
+    AWS_DEFAULT_ACL           = None
+    AWS_S3_FILE_OVERWRITE     = False
+    AWS_QUERYSTRING_AUTH      = False
+    AWS_S3_SIGNATURE_VERSION  = 's3v4'
 
+    # Usa manifest para cache busting
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3ManifestStaticStorage'
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+else:
+    # ---------- local (Whitenoise) ----------
+    from whitenoise.storage import CompressedManifestStaticFilesStorage
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
-# ————————————————————————————————
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
