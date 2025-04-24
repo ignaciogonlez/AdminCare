@@ -109,9 +109,7 @@ nav li a:hover {
   display: none;
 }
 
-/* Pantallas grandes: si quieres conservar un menú horizontal, lo dejas. 
-   Si quieres que el menú siempre sea vertical y controlado por el hamburger,
-   puedes eliminar estas líneas. */
+/* Pantallas grandes */
 @media (min-width: 768px) {
   nav ul {
     flex-direction: row; 
@@ -225,7 +223,7 @@ form button:hover {
 }
 
 /* ============================= */
-/* 7.1 Estilos específicos para el panel de administración */
+/* Estilos para el panel de administración */
 /* ============================= */
 .tags-list {
   list-style: none;
@@ -237,6 +235,32 @@ form button:hover {
 .tags-list li form {
   display: inline-block;
   margin-left: 1rem;
+}
+
+/* ============================= */
+/* Nuevo: estilo del botón con ícono de papelera */
+/* ============================= */
+.btn-trash {
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+/* Ícono dentro del botón */
+.icon-trash {
+  color: #fff; /* Relleno del SVG */
+}
+
+/* Hover */
+.btn-trash:hover {
+  background-color: var(--color-secondary);
 }
 
 /* ============================= */
@@ -263,9 +287,9 @@ footer {
 /* 10. Ajuste para la imagen de portada  */
 /* ============================= */
 .doc-preview img {
-  max-width: 150px;  /* Ajusta este valor a tu preferencia */
-  width: 100%;       /* Para mantener comportamiento responsive */
-  height: auto;      /* Mantiene la proporción de la imagen */
+  max-width: 150px;
+  width: 100%;
+  height: auto;
   display: block;
   margin: 0.5rem 0;
 }
@@ -287,28 +311,25 @@ footer {
   border-radius: 0.5rem;
   padding: 0.5rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  flex: 1 1 300px;  /* Ajusta el ancho mínimo según tus necesidades */
+  flex: 1 1 300px;
   display: flex;
-  flex-direction: column; /* Imagen arriba y detalles debajo */
+  flex-direction: column;
   align-items: center;
 }
 
-/* Contenedor para título/fecha y papelera */
 .doc-details {
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* Espacio reducido entre elementos */
+  gap: 0.5rem;
   margin-top: 0.5rem;
   width: 100%;
   justify-content: flex-start;
 }
 
-/* Ajuste de la fuente para el título y la fecha */
 .doc-info {
   font-size: 0.9rem;
 }
 
-/* Que el botón de eliminar no ocupe todo el ancho */
 .doc-actions {
   flex-shrink: 0;
 }

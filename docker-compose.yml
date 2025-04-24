@@ -1,0 +1,33 @@
+# sin la clave version: (opcional)
+services:
+  web:
+    build: .
+    container_name: admincare_web
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - localstack
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      gunicorn adminCare.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - .:/app
+
+  localstack:
+    image: localstack/localstack:3
+    container_name: localstack
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/var/lib/localstack
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+
+volumes:
+  localstack_data:
