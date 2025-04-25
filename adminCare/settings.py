@@ -16,6 +16,7 @@ ALLOWED_HOSTS = [
 # Apps
 # ————————————————————————————————
 INSTALLED_APPS = [
+    'django_cleanup.apps.CleanupConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
