@@ -102,7 +102,7 @@ if USE_S3:
     # Config recomendada por django-storages
     AWS_DEFAULT_ACL           = None
     AWS_S3_FILE_OVERWRITE     = False
-    AWS_QUERYSTRING_AUTH      = False
+    AWS_QUERYSTRING_AUTH      = True
     AWS_S3_SIGNATURE_VERSION  = 's3v4'
 
     # Usa manifest para cache busting
