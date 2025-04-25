@@ -22,6 +22,8 @@ from django.urls import include, path
 urlpatterns = [
 path('admin/', admin.site.urls), 
 path('', include('appAdminCare.urls')),
+# Auth de Django (login/logout/password-reset…)
+path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 if settings.DEBUG:
