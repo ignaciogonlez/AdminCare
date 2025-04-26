@@ -40,7 +40,7 @@
     <!-- Enlaces de autenticación -->
     <div class="auth-links">
       {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}" class="login-button">Logout</a>
+        <a href="{% url 'logout_confirm' %}" class="login-button">Logout</a>
         {% if user.is_staff %}
           <a href="{% url 'admin_panel' %}" class="login-button">Admin</a>
         {% endif %}
