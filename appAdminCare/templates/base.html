@@ -4,20 +4,12 @@
   <meta charset="UTF-8">
   <title>{% block title %}Mi Proyecto{% endblock %}</title>
   {% load static %}
-  <!-- Favicon -->
-  <link rel="icon" 
-        type="image/png" 
-        sizes="32x32" 
-        href="{% static 'images/favicon-32x32-transparent.png' %}">
-
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32-transparent.png' %}">
   <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 <body>
   <header>
-    <!-- Botón del menú “hamburger” (arriba a la izquierda) -->
     <button id="menuToggle" class="menu-button">☰</button>
-
-    <!-- Menú desplegable -->
     <nav id="menu" class="hidden">
       <ul>
         <li><a href="{% url 'index' %}">Inicio</a></li>
@@ -29,9 +21,13 @@
       </ul>
     </nav>
 
-    <!-- Botón de Login/Logout (arriba a la derecha) -->
+    <!-- LOGIN / LOGOUT -->
     {% if user.is_authenticated %}
-      <a href="{% url 'logout' %}" class="login-button">Logout</a>
+      <!-- Form POST para logout -->
+      <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="login-button">Logout</button>
+      </form>
       {% if user.is_staff %}
         <a href="{% url 'admin_panel' %}" class="login-button">Admin</a>
       {% endif %}
@@ -41,22 +37,17 @@
   </header>
 
   <main class="container">
-    {% block content %}
-    {% endblock %}
+    {% block content %}{% endblock %}
   </main>
 
   <footer>
     <p>© 2025 - Aplicacion adminCare - en colaboración con Apapachando</p>
   </footer>
 
-  <!-- Script para desplegar/ocultar el menú -->
   <script>
     const menuToggle = document.getElementById('menuToggle');
     const menu = document.getElementById('menu');
-
-    menuToggle.addEventListener('click', () => {
-      menu.classList.toggle('hidden');
-    });
+    menuToggle.addEventListener('click', () => menu.classList.toggle('hidden'));
   </script>
 </body>
 </html>

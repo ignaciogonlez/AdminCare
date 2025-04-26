@@ -100,9 +100,11 @@
 
 <hr/>
 
-<!-- Botón para cerrar sesión -->
+<!-- Botón para cerrar sesión convertido en form POST -->
 <div style="margin-top: 2rem;">
-  <a href="{% url 'logout' %}" class="btn">Cerrar Sesión</a>
+  <form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn">Cerrar Sesión</button>
+  </form>
 </div>
-
 {% endblock %}
