@@ -9,7 +9,10 @@
 </head>
 <body>
   <header>
+    <!-- Botón del menú “hamburger” -->
     <button id="menuToggle" class="menu-button">☰</button>
+
+    <!-- Menú desplegable -->
     <nav id="menu" class="hidden">
       <ul>
         <li><a href="{% url 'index' %}">Inicio</a></li>
@@ -23,7 +26,6 @@
 
     <!-- LOGIN / LOGOUT -->
     {% if user.is_authenticated %}
-      <!-- Form POST para logout -->
       <form action="{% url 'logout' %}" method="post" style="display:inline;">
         {% csrf_token %}
         <button type="submit" class="login-button">Logout</button>
