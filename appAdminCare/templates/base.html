@@ -7,25 +7,15 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32-transparent.png' %}">
   <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 
-  <!-- Ajuste rápido: quitamos fondo y borde al botón del menú -->
   <style>
-    .menu-button {
-      background: transparent;
-      border: none;
-      font-size: 1.8rem;   /* tamaño del ícono ☰ */
-      color: #ffffff;      /* mismo color que la barra */
-      cursor: pointer;
-      margin: 0.5rem 1rem;
-    }
-    .menu-button:focus { outline: none; }  /* sin borde de foco */
+    .menu-button{background:transparent;border:none;font-size:1.8rem;color:#ffffff;cursor:pointer;margin:.5rem 1rem;}
+    .menu-button:focus{outline:none;}
   </style>
 </head>
 <body>
   <header>
-    <!-- Botón del menú “hamburger” -->
     <button id="menuToggle" class="menu-button">☰</button>
 
-    <!-- Menú desplegable oculto por defecto -->
     <nav id="menu" class="hidden">
       <ul>
         <li><a href="{% url 'index' %}">Inicio</a></li>
@@ -37,10 +27,9 @@
       </ul>
     </nav>
 
-    <!-- Enlaces de autenticación -->
     <div class="auth-links">
       {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}" class="login-button">Logout</a>
+        <a href="{% url 'logout_confirm' %}" class="login-button">Logout</a>   {# ← usa el nuevo nombre #}
         {% if user.is_staff %}
           <a href="{% url 'admin_panel' %}" class="login-button">Admin</a>
         {% endif %}
@@ -55,13 +44,13 @@
   </main>
 
   <footer>
-    <p>© 2025 - Aplicacion adminCare - en colaboración con Apapachando</p>
+    <p>© 2025 - Aplicación adminCare - en colaboración con Apapachando</p>
   </footer>
 
   <script>
-    const menuToggle = document.getElementById('menuToggle');
-    const menu = document.getElementById('menu');
-    menuToggle.addEventListener('click', () => menu.classList.toggle('hidden'));
+    const menuToggle=document.getElementById('menuToggle');
+    const menu=document.getElementById('menu');
+    menuToggle.addEventListener('click',()=>menu.classList.toggle('hidden'));
   </script>
 </body>
 </html>

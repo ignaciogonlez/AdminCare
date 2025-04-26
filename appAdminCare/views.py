@@ -17,22 +17,25 @@ import os
 
 
 # ---------------------------------------------------------------------
-# Logout con confirmación usando la vista genérica de Django
+# Logout con confirmación
 # ---------------------------------------------------------------------
 class LogoutConfirmView(LogoutView):
     """
-    GET  → muestra la plantilla 'logout_confirm.html'.
-    POST → realiza el logout y redirige a 'index', añadiendo un mensaje.
+    GET  → muestra 'logout_confirm.html'.
+    POST → cierra sesión y redirige a 'index'.
     """
+
     template_name = 'logout_confirm.html'
     next_page = 'index'
+    # -----  Punto clave:  permitir GET además de POST  -----
+    http_method_names = ['get', 'post', 'head', 'options', 'trace']
 
-    # Sobrescribimos GET para mostrar la confirmación sin cerrar sesión todavía
     def get(self, request, *args, **kwargs):
+        """Renderiza la plantilla de confirmación sin cerrar sesión."""
         return render(request, self.template_name)
 
-    # Añadimos mensaje de éxito tras el logout
     def post(self, request, *args, **kwargs):
+        """Hace logout, añade mensaje y continúa con el flujo normal."""
         messages.success(request, "Has cerrado sesión correctamente.")
         return super().post(request, *args, **kwargs)
 
