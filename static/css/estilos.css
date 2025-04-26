@@ -344,3 +344,14 @@ footer {
 .doc-actions {
   flex-shrink: 0;
 }
+
+/* ============================= */
+/* — FIX: form en el header —    */
+/* ============================= */
+header .auth-links form {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: inline;
+}
