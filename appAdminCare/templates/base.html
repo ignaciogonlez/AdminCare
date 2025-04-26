@@ -12,7 +12,7 @@
     <!-- Botón del menú “hamburger” -->
     <button id="menuToggle" class="menu-button">☰</button>
 
-    <!-- Menú desplegable -->
+    <!-- Menú desplegable oculto por defecto -->
     <nav id="menu" class="hidden">
       <ul>
         <li><a href="{% url 'index' %}">Inicio</a></li>
@@ -24,18 +24,20 @@
       </ul>
     </nav>
 
-    <!-- LOGIN / LOGOUT -->
-    {% if user.is_authenticated %}
-      <form action="{% url 'logout' %}" method="post" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit" class="login-button">Logout</button>
-      </form>
-      {% if user.is_staff %}
-        <a href="{% url 'admin_panel' %}" class="login-button">Admin</a>
+    <!-- Enlaces de autenticación -->
+    <div class="auth-links">
+      {% if user.is_authenticated %}
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="login-button">Logout</button>
+        </form>
+        {% if user.is_staff %}
+          <a href="{% url 'admin_panel' %}" class="login-button">Admin</a>
+        {% endif %}
+      {% else %}
+        <a href="{% url 'login' %}" class="login-button">Login</a>
       {% endif %}
-    {% else %}
-      <a href="{% url 'login' %}" class="login-button">Login</a>
-    {% endif %}
+    </div>
   </header>
 
   <main class="container">
