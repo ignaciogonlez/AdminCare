@@ -14,9 +14,7 @@ urlpatterns = [
     path('ayudas/privada/', views.ayuda_privada, name='ayuda_privada'),
 
     path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_confirm_view, name='logout'),
     path('register/', views.register_view, name='register'),
     
     path('admin-panel/', views.admin_panel, name='admin_panel'),
 ]
-
