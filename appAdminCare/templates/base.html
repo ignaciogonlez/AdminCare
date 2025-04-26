@@ -6,6 +6,19 @@
   {% load static %}
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32-transparent.png' %}">
   <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+
+  <!-- Ajuste rápido: quitamos fondo y borde al botón del menú -->
+  <style>
+    .menu-button {
+      background: transparent;
+      border: none;
+      font-size: 1.8rem;   /* tamaño del ícono ☰ */
+      color: #ffffff;      /* mismo color que la barra */
+      cursor: pointer;
+      margin: 0.5rem 1rem;
+    }
+    .menu-button:focus { outline: none; }  /* sin borde de foco */
+  </style>
 </head>
 <body>
   <header>
