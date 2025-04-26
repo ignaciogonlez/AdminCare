@@ -109,6 +109,12 @@ EMAIL_USE_TLS       = True
 DEFAULT_FROM_EMAIL  = 'ayudaadmcare@gmail.com'
 
 # ————————————————————————————————
+# Redirects tras login/logout
+# ————————————————————————————————
+LOGIN_REDIRECT_URL  = 'index'   # nombre de tu vista de inicio
+LOGOUT_REDIRECT_URL = 'login'   # tras logout, va al login
+
+# ————————————————————————————————
 # Archivos estáticos / media
 # ————————————————————————————————
 STATIC_URL       = '/static/'
