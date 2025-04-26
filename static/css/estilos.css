@@ -60,26 +60,27 @@ header {
   position: relative; /* Para posicionar el botón de login */
 }
 
-/* El botón hamburguer (SIEMPRE visible) */
+/* Botón hamburguesa ­— versión definitiva, sin fondo ni contorno */
 .menu-button {
-  display: inline-block;
-  background: transparent !important;
-  border: none !important;
-  width: auto !important;
-  height: auto !important;
-  padding: 0;
+  background: transparent !important;  /* sin color        */
+  border: none !important;             /* sin borde         */
+  border-radius: 0 !important;         /* sin esquinas      */
+  width: auto !important;              /* sin ancho fijo    */
+  height: auto !important;             /* sin alto fijo     */
+  padding: 0;                          /* sin relleno extra */
   margin: 0.5rem 1rem;
-  font-size: 2rem;
+  font-size: 2rem;                     /* tamaño del “☰”    */
   line-height: 1;
+  color: #fff;                         /* icono en blanco   */
   cursor: pointer;
-  color: #fff;
 }
 .menu-button:focus,
 .menu-button:hover,
 .menu-button:active {
   background: transparent !important;
-  outline: none;
+  outline: none !important;
 }
+
 
 /* Botón de Login/Logout (arriba a la derecha) */
 .login-button {
