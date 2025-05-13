@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # propios
-    'appAdminCare',
+    'appAdminCare.apps.AppadmincareConfig',
 ]
 
 SITE_ID = 1
@@ -68,12 +68,27 @@ TEMPLATES = [{
 WSGI_APPLICATION = 'adminCare.wsgi.application'
 
 # ————————————————————————————————
-# Base de datos (SQLite → dev)
+# Base de datos (SQLite → dev) ahora filess.io
 # ————————————————————————————————
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        #Descomentar para usar SQLite
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
+
+        #Descomentar para usar MySQL
+        #'ENGINE': 'django.db.backends.mysql',
+        #'NAME': 'admincareDB_costeveram',
+        #'USER': 'admincareDB_costeveram',
+        #'PASSWORD': '9604e2977c201b2c7e2fe190a105e44fdc2df068',
+        #'HOST': 'ihpl3.h.filess.io',
+        #'PORT': '3305',
+        'ENGINE':   'django.db.backends.mysql',
+        'NAME':     os.getenv('DB_NAME'),
+        'USER':     os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASS'),
+        'HOST':     os.getenv('DB_HOST'),
+        'PORT':     os.getenv('DB_PORT', '3306'),
     }
 }
 

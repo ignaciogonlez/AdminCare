@@ -9,6 +9,7 @@ django-storages==1.14.6
 docutils==0.19
 gunicorn==23.0.0
 jmespath==1.0.1
+mysqlclient==2.2.7
 packaging==24.2
 pillow==11.1.0
 pyasn1==0.6.1
