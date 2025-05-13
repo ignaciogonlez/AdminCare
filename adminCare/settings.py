@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # propios
-    'appAdminCare.apps.AppadmincareConfig',
+    'appAdminCare',
 ]
 
 SITE_ID = 1
