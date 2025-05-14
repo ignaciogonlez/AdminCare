@@ -19,7 +19,7 @@
     <strong>AdminCare</strong> unifica y organiza toda la información sobre los trámites, recursos y experiencias disponibles para ayudar a las personas y familias afectadas por enfermedades raras o sin diagnóstico. Nuestro objetivo es facilitar la búsqueda de documentos y datos clave en un único lugar, haciendo más sencillo el proceso de encontrar la información que necesitas.
   </p>
 
-  <!-- Sección de repositorio de documentos -->
+  <!-- Sección de Repositorio de Documentos (registro necesario) -->
   <div class="row mb-5">
     <div class="col-12 col-md-6">
       <h2 class="h4 mb-3">📁 Repositorio de Documentos</h2>
@@ -32,10 +32,13 @@
         </ul>
       </p>
       <p class="text-justify">
-        Utiliza nuestro buscador para localizar cualquier archivo por su nombre, y accede a ellos en un solo clic.
+        Utiliza nuestro buscador para localizar cualquier archivo por su nombre, fecha o categoría, y accede a ellos en un solo clic.
       </p>
+      <div class="alert alert-info mt-3" role="alert">
+        Para empezar a guardar y gestionar tus documentos, regístrate e inicia sesión.
+      </div>
       <div class="text-center mt-3">
-        <a href="{% url 'documentos:listado' %}" class="btn btn-outline-primary">Ir al Repositorio</a>
+        <a href="{% url 'register' %}" class="btn btn-primary">Regístrate ahora</a>
       </div>
     </div>
     <div class="col-12 col-md-6 text-center">
@@ -43,7 +46,7 @@
     </div>
   </div>
 
-  <!-- Sección de información de ayudas -->
+  <!-- Sección de Información de Ayudas -->
   <div class="row">
     <div class="col-12 col-md-6 order-2 order-md-1 text-center">
       <img src="{% static 'images/help_icon.png' %}" alt="Icono Ayudas" class="img-fluid" style="max-height: 200px;">
@@ -60,10 +63,10 @@
         </ul>
       </p>
       <p class="text-justify">
-        Toda la información organizada por región, para que sepas qué preguntar a los servicios sociales de tu comunidad autónoma.
+        Toda la información organizada por tipo y región, para que sepas qué preguntar a los servicios sociales de tu comunidad autónoma.
       </p>
       <div class="text-center mt-3">
-        <a href="{% url 'ayudas:listado' %}" class="btn btn-outline-success">Ver Ayudas Disponibles</a>
+        <a href="{% url 'ayudas' %}" class="btn btn-outline-success">Ver Ayudas Disponibles</a>
       </div>
     </div>
   </div>
