@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from .models import FAQ, Document, HelpDocument, Tag
 
 class FAQForm(forms.ModelForm):
@@ -35,6 +36,7 @@ class HelpDocumentForm(forms.ModelForm):
         required=False,
         label="Etiquetas"
     )
+
     class Meta:
         model = HelpDocument
         fields = ['title', 'summary', 'file', 'tags']
@@ -61,7 +63,17 @@ class TagForm(forms.ModelForm):
         }
 
 class UserRegisterForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
+    # Hacemos obligatorio el email y definimos su campo
+    email = forms.EmailField(
+        required=True,
+        label="Correo electrónico",
+        error_messages={'required': 'El correo electrónico es obligatorio.'}
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        label="Contraseña"
+    )
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
@@ -73,3 +85,18 @@ class UserRegisterForm(forms.ModelForm):
             'username': '',
             'email': '',
         }
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email:
+            raise ValidationError("El correo electrónico es obligatorio.")
+        return email
+
+    def save(self, commit=True):
+        # Nos aseguramos de guardar la contraseña hasheada
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.set_password(self.cleaned_data['password'])
+        if commit:
+            user.save()
+        return user
