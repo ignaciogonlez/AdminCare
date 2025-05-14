@@ -1,8 +1,70 @@
 {% extends 'base.html' %}
-{% block title %}Inicio{% endblock %}
+
+{% block title %}Inicio - AdminCare{% endblock %}
 
 {% block content %}
-<h1>Bienvenido a la aplicación ADMINCARE</h1>
-<p>Aquí puedes encontrar información y documentos relacionados con las distintas ayudas.</p>
-<p>Usa el menú para navegar por las secciones.</p>
+<div class="container py-5">
+  <!-- Logos de la asociación y la aplicación -->
+  <div class="d-flex justify-content-center align-items-center mb-4 flex-wrap">
+    <img src="{% static 'images/logoLargoCorto.jpg' %}" alt="Logo Apapachando" class="img-fluid m-2" style="max-height: 80px;">
+    <img src="{% static 'images/favicon_48_transparent.png' %}" alt="Logo AdminCare" class="img-fluid m-2" style="max-height: 80px;">
+  </div>
+
+  <!-- Título principal -->
+  <h1 class="text-center mb-4">Bienvenido a <strong>AdminCare</strong></h1>
+
+  <!-- Descripción general -->
+  <p class="lead text-justify mb-5">
+    <strong>AdminCare</strong> unifica y organiza toda la información sobre los trámites, recursos y experiencias disponibles para ayudar a las personas y familias afectadas por enfermedades raras o sin diagnóstico. Nuestro objetivo es facilitar la búsqueda de documentos y datos clave en un único lugar, haciendo más sencillo el proceso de encontrar la información que necesitas.
+  </p>
+
+  <!-- Sección de repositorio de documentos -->
+  <div class="row mb-5">
+    <div class="col-12 col-md-6">
+      <h2 class="h4 mb-3">📁 Repositorio de Documentos</h2>
+      <p class="text-justify">
+        Guarda y organiza todos los documentos que necesites presentar en tus solicitudes:
+        <ul>
+          <li>Informes médicos y diagnósticos</li>
+          <li>Trámites y justificantes previos</li>
+          <li>Comunicaciones y resoluciones oficiales</li>
+        </ul>
+      </p>
+      <p class="text-justify">
+        Utiliza nuestro buscador para localizar cualquier archivo por su nombre, y accede a ellos en un solo clic.
+      </p>
+      <div class="text-center mt-3">
+        <a href="{% url 'documentos:listado' %}" class="btn btn-outline-primary">Ir al Repositorio</a>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 text-center">
+      <img src="{% static 'images/documents_icon.png' %}" alt="Icono Repositorio" class="img-fluid" style="max-height: 200px;">
+    </div>
+  </div>
+
+  <!-- Sección de información de ayudas -->
+  <div class="row">
+    <div class="col-12 col-md-6 order-2 order-md-1 text-center">
+      <img src="{% static 'images/help_icon.png' %}" alt="Icono Ayudas" class="img-fluid" style="max-height: 200px;">
+    </div>
+    <div class="col-12 col-md-6 order-1 order-md-2">
+      <h2 class="h4 mb-3">💡 Información de Ayudas</h2>
+      <p class="text-justify">
+        Descubre recursos y testimonios para orientarte en tu búsqueda de apoyos:
+        <ul>
+          <li>Experiencias personales de otras familias</li>
+          <li>Ayudas estatales disponibles</li>
+          <li>Subvenciones autonómicas según tu lugar de residencia</li>
+          <li>Opciones de financiación y becas privadas</li>
+        </ul>
+      </p>
+      <p class="text-justify">
+        Toda la información organizada por región, para que sepas qué preguntar a los servicios sociales de tu comunidad autónoma.
+      </p>
+      <div class="text-center mt-3">
+        <a href="{% url 'ayudas:listado' %}" class="btn btn-outline-success">Ver Ayudas Disponibles</a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
