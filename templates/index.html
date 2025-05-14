@@ -5,12 +5,6 @@
 
 {% block content %}
 <div class="container py-5">
-  <!-- Logos de la asociación y la aplicación -->
-  <div class="d-flex justify-content-center align-items-center mb-4 flex-wrap">
-    <img src="{% static 'images/logoLargoCorto.jpg' %}" alt="Logo Apapachando" class="img-fluid m-2" style="max-height: 80px;">
-    <img src="{% static 'images/favicon_48_transparent.png' %}" alt="Logo AdminCare" class="img-fluid m-2" style="max-height: 80px;">
-  </div>
-
   <!-- Título principal -->
   <h1 class="text-center mb-4">Bienvenido a <strong>AdminCare</strong></h1>
 
@@ -69,6 +63,12 @@
         <a href="{% url 'ayudas' %}" class="btn btn-outline-success">Ver Ayudas Disponibles</a>
       </div>
     </div>
+  </div>
+
+  <!-- Logos de la asociación y la aplicación (centrados al final) -->
+  <div class="d-flex justify-content-center align-items-center mt-5 flex-wrap">
+    <img src="{% static 'images/logoLargoCorto.jpg' %}" alt="Logo Apapachando" class="img-fluid m-2" style="max-height: 80px;">
+    <img src="{% static 'images/favicon_48_transparent.png' %}" alt="Logo AdminCare" class="img-fluid m-2" style="max-height: 80px;">
   </div>
 </div>
 {% endblock %}
