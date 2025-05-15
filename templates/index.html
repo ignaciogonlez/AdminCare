@@ -4,72 +4,78 @@
 {% block title %}Inicio - AdminCare{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="home-content container py-5">
 
   <!-- Cabecera centrada -->
-  <div class="text-center mb-5">
-    <h1 class="mb-3">Bienvenido a <strong>AdminCare</strong></h1>
-    <p class="lead mb-3">AdminCare unifica y organiza toda la información sobre trámites, recursos y experiencias para facilitar tu búsqueda de documentos y datos clave.</p>
-    <img src="{% static 'images/favicon_48_transparent.png' %}" alt="Logo AdminCare" class="img-fluid" style="max-height: 120px;">
-  </div>
+  <h1 class="mb-3">Bienvenido a <strong>AdminCare</strong></h1>
+  <p class="lead mb-3">
+    AdminCare unifica y organiza toda la información sobre trámites, recursos y experiencias para
+    facilitar tu búsqueda de documentos y datos clave.
+  </p>
+  <img
+    src="{% static 'images/favicon_48_transparent.png' %}"
+    alt="Logo AdminCare"
+    class="img-fluid"
+    style="max-height: 120px;"
+  >
 
   <!-- Sección: Documentos Personales -->
   <div class="row justify-content-center mb-5">
     <div class="col-12 col-md-6">
-      <div class="text-center mb-3">
-        <h2>📁 Documentos Personales</h2>
-      </div>
+      <h2 class="mb-3 text-center">📁 Documentos Personales</h2>
       <p class="text-center">Guarda y organiza todos los documentos que necesites presentar:</p>
-      <div class="d-flex justify-content-center mb-3">
-        <ul class="text-start" style="width:100%; max-width:400px;">
-          <li>Informes médicos y diagnósticos</li>
-          <li>Trámites y justificantes previos</li>
-          <li>Comunicaciones y resoluciones oficiales</li>
-        </ul>
-      </div>
-      <div class="text-center mb-3">
-        <div class="alert alert-info d-inline-block">Para empezar a guardar y gestionar tus documentos, regístrate e inicia sesión.</div>
-      </div>
-      <div class="text-center mb-4">
-        <a href="{% url 'register' %}" class="btn btn-primary">Regístrate ahora</a>
-      </div>
-      <div class="text-center">
-        <img src="{% static 'images/documents_icon.png' %}" alt="Icono Repositorio" class="img-fluid" style="max-height: 120px;">
-      </div>
+      <ul>
+        <li>Informes médicos y diagnósticos</li>
+        <li>Trámites y justificantes previos</li>
+        <li>Comunicaciones y resoluciones oficiales</li>
+      </ul>
+      <div class="alert alert-info mt-3">Para empezar a guardar y gestionar tus documentos, regístrate e inicia sesión.</div>
+      <a href="{% url 'register' %}" class="btn btn-primary mt-3">Regístrate ahora</a>
+      <img
+        src="{% static 'images/documents_icon.png' %}"
+        alt="Icono Repositorio"
+        class="img-fluid mt-4"
+        style="max-height: 120px;"
+      >
     </div>
   </div>
 
   <!-- Sección: Información de Ayudas -->
   <div class="row justify-content-center mb-5">
     <div class="col-12 col-md-6">
-      <div class="text-center mb-3">
-        <h2>💡 Información de Ayudas</h2>
-      </div>
+      <h2 class="mb-3 text-center">💡 Información de Ayudas</h2>
       <p class="text-center">Descubre recursos y testimonios para orientarte en tu búsqueda de apoyos:</p>
-      <div class="d-flex justify-content-center mb-3">
-        <ul class="text-start" style="width:100%; max-width:400px;">
-          <li>Experiencias personales de otras familias</li>
-          <li>Ayudas estatales disponibles</li>
-          <li>Subvenciones autonómicas según tu residencia</li>
-          <li>Opciones de financiación y becas privadas</li>
-        </ul>
-      </div>
-      <div class="text-center mb-3">
-        <a href="{% url 'ayudas' %}" class="btn btn-success">Ver Ayudas Disponibles</a>
-      </div>
-      <div class="text-center">
-        <img src="{% static 'images/help_icon.png' %}" alt="Icono Ayudas" class="img-fluid" style="max-height: 120px;">
-      </div>
+      <ul>
+        <li>Experiencias personales de otras familias</li>
+        <li>Ayudas estatales disponibles</li>
+        <li>Subvenciones autonómicas según tu residencia</li>
+        <li>Opciones de financiación y becas privadas</li>
+      </ul>
+      <a href="{% url 'ayudas' %}" class="btn btn-success mt-3">Ver Ayudas Disponibles</a>
+      <img
+        src="{% static 'images/help_icon.png' %}"
+        alt="Icono Ayudas"
+        class="img-fluid mt-4"
+        style="max-height: 120px;"
+      >
     </div>
   </div>
 
   <!-- Logos finales centrados -->
   <div class="row">
-    <div class="col-12">
-      <div class="text-center">
-        <img src="{% static 'images/logoLargoCorto.jpg' %}" alt="Logo Apapachando" class="img-fluid d-inline-block m-2" style="max-height: 60px;">
-        <img src="{% static 'images/favicon_48_transparent.png' %}" alt="Logo AdminCare" class="img-fluid d-inline-block m-2" style="max-height: 60px;">
-      </div>
+    <div class="col-12 text-center">
+      <img
+        src="{% static 'images/logoLargoCorto.jpg' %}"
+        alt="Logo Apapachando"
+        class="img-fluid d-inline-block m-2"
+        style="max-height: 60px;"
+      >
+      <img
+        src="{% static 'images/favicon_48_transparent.png' %}"
+        alt="Logo AdminCare"
+        class="img-fluid d-inline-block m-2"
+        style="max-height: 60px;"
+      >
     </div>
   </div>
 
