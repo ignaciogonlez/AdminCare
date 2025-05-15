@@ -51,7 +51,7 @@ h1, h2, h3, h4, h5, h6 {
 /* ============================= */
 /* 3. Cabecera y Navegación      */
 /* ============================= */
-/* (Aquí van tus estilos de header, nav y demás sin cambios) */
+/* ... tus estilos de header/nav sin cambios ... */
 
 /* ============================= */
 /* 4. Contenedor principal       */
@@ -65,31 +65,25 @@ h1, h2, h3, h4, h5, h6 {
 /* ============================= */
 /* 5. Secciones y bloques        */
 /* ============================= */
-section {
-  margin-bottom: 2rem;
-}
-section h2 {
-  margin-bottom: 1rem;
-  color: var(--color-secondary);
-}
+/* ... */
 
 /* ============================= */
 /* 6. Formularios                */
 /* ============================= */
-/* (Tus estilos de formularios) */
+/* ... */
 
 /* ============================= */
 /* 7. Botones                    */
 /* ============================= */
 .btn {
-  display: inline-block;       /* ← Asegura que no ocupen 100% */
+  display: inline-block;      /* Para que el ancho ajuste al contenido */
   background: var(--color-primary);
   color: #fff;
   padding: 0.65rem 1rem;
   border-radius: 0.25rem;
   font-weight: 600;
+  text-align: center;         /* CENTRA el texto dentro */
   transition: background 0.2s ease;
-  text-align: center;          /* Centra el texto dentro */
 }
 .btn:hover {
   background: var(--color-secondary);
@@ -98,7 +92,7 @@ section h2 {
 /* ============================= */
 /* 8. Footer                     */
 /* ============================= */
-/* (Tus estilos de footer) */
+/* ... */
 
 /* ============================= */
 /* 9. Media queries extras       */
@@ -110,20 +104,37 @@ section h2 {
 }
 
 /* ============================= */
-/* 10. Centro de imágenes y botones solo en Home */
+/* 10. Ajuste para la imagen de portada */
 /* ============================= */
+/* ... */
+
+/* ============================= */
+/* 11. Estilos para la lista de documentos */
+/* ============================= */
+/* ... */
+
+/* ============================= */
+/* 12. CENTRADO IMÁGENES Y BOTONES EN HOME */
+/* ============================= */
+/* Centra todos los <img> y .btn dentro de .home-content */
 .home-content img,
 .home-content .btn {
-  display: block;      /* Los iconos se tratan como bloque */
-  margin: 1rem auto;   /* Se centran con margen auto */
+  display: block;
+  margin: 1rem auto;
 }
 
-/* Icono final más grande */
+/* Logo final: tamaño moderado en móvil, más grande en pantallas amplias */
 .home-content img.final-logo {
-  max-height: 200px;   /* Ajusta a lo “muy grande” que quieras */
+  max-height: 100px;
+  width: auto;
+}
+@media (min-width: 768px) {
+  .home-content img.final-logo {
+    max-height: 180px;
+  }
 }
 
-/* Listas centradas pero texto alineado */
+/* Listas centradas pero con texto a la izquierda */
 .home-content ul {
   display: inline-block;
   margin: 0 auto 1rem;
