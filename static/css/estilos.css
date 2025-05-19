@@ -35,6 +35,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
 /* ============================= */
 /* 3. Cabecera y Navegación      */
 /* ============================= */
@@ -222,7 +235,44 @@ footer {
 }
 
 /* ============================= */
-/* 12. CENTRADO EN LA HOME        */
+/* 12. Ajuste para la imagen de portada (documentos) */
+/* ============================= */
+.doc-preview img {
+  max-width: 120px;
+  max-height: 160px;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* ============================= */
+/* 13. Estilos para la lista de documentos */
+/* ============================= */
+.documents-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center; /* Centra horizontalmente los ítems */
+}
+
+.document-item {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  flex: 1 1 280px;   /* Ancho base y flexible */
+  max-width: 300px;  /* No crece más allá de 300px */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ============================= */
+/* 14. CENTRADO EN LA HOME        */
 /* ============================= */
 /* Sólo en el index, centramos imágenes y botones */
 .home-content img,
