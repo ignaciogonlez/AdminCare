@@ -73,8 +73,8 @@ WSGI_APPLICATION = 'adminCare.wsgi.application'
 DATABASES = {
     'default': {
         #Descomentar para usar SQLite
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
 
         #Descomentar para usar MySQL
         #'ENGINE': 'django.db.backends.mysql',
@@ -83,12 +83,12 @@ DATABASES = {
         #'PASSWORD': '9604e2977c201b2c7e2fe190a105e44fdc2df068',
         #'HOST': 'ihpl3.h.filess.io',
         #'PORT': '3305',
-        'ENGINE':   'django.db.backends.mysql',
-        'NAME':     os.getenv('DB_NAME'),
-        'USER':     os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASS'),
-        'HOST':     os.getenv('DB_HOST'),
-        'PORT':     os.getenv('DB_PORT', '3306'),
+        #'ENGINE':   'django.db.backends.mysql',
+        #'NAME':     os.getenv('DB_NAME'),
+        #'USER':     os.getenv('DB_USER'),
+        #'PASSWORD': os.getenv('DB_PASS'),
+        #'HOST':     os.getenv('DB_HOST'),
+        #'PORT':     os.getenv('DB_PORT', '3306'),
     }
 }
 

@@ -1,7 +1,13 @@
+# models.py
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.core.files.base import ContentFile
+
+import fitz  # PyMuPDF
+from io import BytesIO
 
 # Definimos el storage según USE_S3
 if getattr(settings, "USE_S3", False):
@@ -31,7 +37,6 @@ class Document(models.Model):
         help_text="Sube el archivo",
         storage=MediaStorage()
     )
-    # Campo para almacenar la portada (thumbnail) de tu PDF.
     cover = models.ImageField(
         upload_to='documents_covers/',
         null=True,
@@ -42,6 +47,28 @@ class Document(models.Model):
 
     def __str__(self):
         return self.title
+
+    # Si ya tienes otro mecanismo que genera cover para Document,
+    # puedes omitir este save(). Lo incluyo aquí por si quieres
+    # auto-generar también para Document con PyMuPDF.
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.file and self.file.name.lower().endswith('.pdf') and not self.cover:
+            try:
+                doc = fitz.open(self.file.path)
+                page = doc.load_page(0)
+                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+                img_data = pix.tobytes("jpeg")
+                doc.close()
+
+                buf = BytesIO(img_data)
+                filename = f"{self.pk}_doc_cover.jpg"
+                self.cover.save(filename, ContentFile(buf.read()), save=False)
+                buf.close()
+                super().save(update_fields=['cover'])
+            except Exception:
+                pass
 
 
 class FAQ(models.Model):
@@ -75,6 +102,14 @@ class HelpDocument(models.Model):
         help_text="Sube el archivo en PDF",
         storage=MediaStorage()
     )
+    cover = models.ImageField(
+        upload_to='help_docs_covers/',
+        null=True,
+        blank=True,
+        verbose_name="Portada",
+        help_text="Miniatura generada a partir de la primera página del PDF",
+        storage=MediaStorage()
+    )
     tags = models.ManyToManyField(
         Tag,
         related_name='help_documents',
@@ -84,3 +119,24 @@ class HelpDocument(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        # Guardamos primero el HelpDocument para disponer de file.path
+        super().save(*args, **kwargs)
+
+        # Si es un PDF y aún no tiene portada, la generamos
+        if self.file and self.file.name.lower().endswith('.pdf') and not self.cover:
+            try:
+                doc = fitz.open(self.file.path)
+                page = doc.load_page(0)
+                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+                img_data = pix.tobytes("jpeg")
+                doc.close()
+
+                buf = BytesIO(img_data)
+                filename = f"{self.pk}_help_cover.jpg"
+                self.cover.save(filename, ContentFile(buf.read()), save=False)
+                buf.close()
+                super().save(update_fields=['cover'])
+            except Exception:
+                pass
