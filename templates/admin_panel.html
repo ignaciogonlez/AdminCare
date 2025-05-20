@@ -1,141 +1,110 @@
-# models.py
+{% extends 'base.html' %}
+{% block title %}Panel de Administración{% endblock %}
 
-from django.db import models
-from django.contrib.auth.models import User
-from django.conf import settings
-from django.core.files.storage import FileSystemStorage
-from django.core.files.base import ContentFile
+{% block content %}
+<h1>Panel de Administración</h1>
 
-import fitz  # PyMuPDF
-from io import BytesIO
+<!-- Sección HelpDocuments -->
+<h2>Gestionar Documentos de Ayuda</h2>
+<ul>
+  {% for hd in help_docs %}
+    <li>
+      <strong>{{ hd.title }}</strong>
+      <!-- Si hay archivo, mostrar enlace -->
+      {% if hd.file %}
+        <br/><a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
+      {% endif %}
+      <form method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_helpdoc_id" value="{{ hd.id }}">
+        <button type="submit" class="btn-trash" title="Eliminar">
+          <!-- Ícono de papelera (SVG) -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
+          </svg>
+        </button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ help_doc_form.as_p }}
+  <button type="submit" name="create_helpdoc">Crear Documento de Ayuda</button>
+</form>
 
+<hr/>
 
-# Storage configurable para S3 o local
-if getattr(settings, "USE_S3", False):
-    from storages.backends.s3boto3 import S3Boto3Storage
+<!-- Sección Tags -->
+<h2>Gestionar Tags</h2>
+<ul class="tags-list">
+  {% for tg in tags %}
+    <li>
+      {{ tg.name }}
+      <form method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_tag_id" value="{{ tg.id }}">
+        <button type="submit" class="btn-trash" title="Eliminar">
+          <!-- Ícono de papelera (SVG) -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
+          </svg>
+        </button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+<form method="POST">
+  {% csrf_token %}
+  {{ tag_form.as_p }}
+  <button type="submit" name="create_tag">Crear Tag</button>
+</form>
 
-    class MediaStorage(S3Boto3Storage):
-        location = "media"
-        file_overwrite = False
-else:
-    class MediaStorage(FileSystemStorage):
-        location = settings.MEDIA_ROOT
-        base_url = settings.MEDIA_URL
+<hr/>
 
+<!-- Sección FAQs -->
+<h2>Gestionar FAQs</h2>
+<ul>
+  {% for faq in faqs_list %}
+    <li>
+      <strong>{{ faq.question }}</strong>
+      <br/>{{ faq.answer }}
+      <form method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_faq_id" value="{{ faq.id }}">
+        <button type="submit" class="btn-trash" title="Eliminar">
+          <!-- Ícono de papelera (SVG) -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0  0 1-.5-.5z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 
+            2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 
+            0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 
+            0 1 1 1zM4.118 4 4 4.059V13a1 1 
+            0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 
+            4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 
+            0 0 0 0-1h-11z"/>
+          </svg>
+        </button>
+      </form>
+    </li>
+    <hr/>
+  {% endfor %}
+</ul>
+<form method="POST">
+  {% csrf_token %}
+  {{ faq_form.as_p }}
+  <button type="submit" name="create_faq">Crear FAQ</button>
+</form>
 
-class Document(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='documents'
-    )
-    title = models.CharField(max_length=200, verbose_name="Título")
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    file = models.FileField(
-        upload_to='documents/',
-        verbose_name="Archivo",
-        help_text="Sube el archivo",
-        storage=MediaStorage()
-    )
-    cover = models.ImageField(
-        upload_to='documents_covers/',
-        null=True,
-        blank=True,
-        verbose_name="Portada",
-        help_text="Miniatura generada a partir de la primera página del PDF",
-        storage=MediaStorage()
-    )
+<hr/>
 
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        # Guardamos primero para disponer de self.file.path o URL
-        super().save(*args, **kwargs)
-
-        # Si es PDF y no hay cover, lo generamos con PyMuPDF
-        if self.file and self.file.name.lower().endswith('.pdf') and not self.cover:
-            try:
-                doc = fitz.open(self.file.path)
-                page = doc.load_page(0)  # primera página
-                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # escala 2× para mayor calidad
-                img_data = pix.tobytes("jpeg")
-                doc.close()
-
-                buf = BytesIO(img_data)
-                filename = f"{self.pk}_cover.jpg"
-                self.cover.save(filename, ContentFile(buf.read()), save=False)
-                buf.close()
-                super().save(update_fields=['cover'])
-            except Exception:
-                # Si algo falla, dejamos que Django siga sin cover
-                pass
-
-
-class FAQ(models.Model):
-    question = models.CharField(max_length=255, verbose_name="Pregunta")
-    answer = models.TextField(verbose_name="Respuesta")
-
-    def __str__(self):
-        return self.question
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True, verbose_name="Nombre")
-
-    def __str__(self):
-        return self.name
-
-
-class HelpDocument(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Título")
-    summary = models.TextField(
-        blank=True,
-        null=True,
-        verbose_name="Resumen",
-        help_text="Escribe un breve resumen del documento"
-    )
-    file = models.FileField(
-        upload_to='help_docs/',
-        blank=True,
-        null=True,
-        verbose_name="Archivo PDF",
-        help_text="Sube el archivo en PDF",
-        storage=MediaStorage()
-    )
-    cover = models.ImageField(
-        upload_to='help_docs/covers/',
-        null=True,
-        blank=True,
-        verbose_name="Portada",
-        help_text="Miniatura generada a partir de la primera página del PDF",
-        storage=MediaStorage()
-    )
-    tags = models.ManyToManyField(
-        Tag,
-        related_name='help_documents',
-        blank=True,
-        verbose_name="Etiquetas"
-    )
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        if self.file and self.file.name.lower().endswith('.pdf') and not self.cover:
-            try:
-                doc = fitz.open(self.file.path)
-                page = doc.load_page(0)
-                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
-                img_data = pix.tobytes("jpeg")
-                doc.close()
-
-                buf = BytesIO(img_data)
-                filename = f"{self.pk}_help_cover.jpg"
-                self.cover.save(filename, ContentFile(buf.read()), save=False)
-                buf.close()
-                super().save(update_fields=['cover'])
-            except Exception:
-                pass
+<!-- Botón para cerrar sesión convertido en form POST -->
+<div style="margin-top: 2rem;">
+  <form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn">Cerrar Sesión</button>
+  </form>
+</div>
+{% endblock %}
