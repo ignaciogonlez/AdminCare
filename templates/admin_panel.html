@@ -37,6 +37,7 @@
     <summary style="cursor:pointer; font-weight:bold;">
       {{ tag.name }}
     </summary>
+
     <ul style="margin-left:1.5rem; margin-top:0.5rem;">
       {% for hd in help_docs %}
         {% if tag in hd.tags.all %}
@@ -53,9 +54,8 @@
         </li>
         {% endif %}
       {% endfor %}
-      {% if help_docs|filter:"tags__id=tag.id"|length == 0 %}
-        <li>No hay documentos en esta categoría.</li>
-      {% endif %}
+      {# Si quieres un mensaje cuando NO hay ninguno, simplemente descomenta estas líneas: #}
+      {# <li>No hay documentos en esta categoría.</li> #}
     </ul>
   </details>
   {% endfor %}
