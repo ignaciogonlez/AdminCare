@@ -1,4 +1,4 @@
-# models.py
+# appAdminCare/models.py – versión robusta para S3 y filesystem
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -9,7 +9,9 @@ from django.core.files.base import ContentFile
 import fitz  # PyMuPDF
 from io import BytesIO
 
-# Definimos el storage según USE_S3
+# ---------------------------------------------------------------------------
+# Storage configurable (S3 o local)
+# ---------------------------------------------------------------------------
 if getattr(settings, "USE_S3", False):
     from storages.backends.s3boto3 import S3Boto3Storage
 
@@ -18,57 +20,88 @@ if getattr(settings, "USE_S3", False):
         file_overwrite = False
 else:
     class MediaStorage(FileSystemStorage):
-        # Usará MEDIA_ROOT y MEDIA_URL definidos en settings.py
         location = settings.MEDIA_ROOT
         base_url = settings.MEDIA_URL
 
+# ---------------------------------------------------------------------------
+# Utilidad común para generar miniatura PDF -> JPEG
+# ---------------------------------------------------------------------------
+
+def _generate_cover(instance, field_name: str, prefix: str):
+    """Extrae la primera página del PDF y la guarda en el ImageField indicado.
+
+    - Lee desde el propio FileField (funciona con S3 y local).
+    - Guarda la imagen en JPG en el mismo storage.
+    """
+    file_field = getattr(instance, field_name)
+    if not file_field or file_field.name is None:
+        return  # no file aún
+
+    name_lower = file_field.name.lower()
+    if not name_lower.endswith(".pdf"):
+        return  # solo PDFs
+
+    # No sobrescribas si ya existe portada
+    cover_field = instance.cover if hasattr(instance, "cover") else None
+    if cover_field and cover_field.name:
+        return
+
+    try:
+        # Leemos el PDF en memoria (vale para S3 o FS)
+        file_field.open("rb")
+        pdf_bytes = file_field.read()
+        file_field.close()
+
+        pdf_doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        page = pdf_doc.load_page(0)
+        pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # 2× resolución
+        img_bytes = pix.tobytes("jpeg")
+        pdf_doc.close()
+
+        filename = f"{instance.pk}_{prefix}_cover.jpg"
+        cover_field.save(filename, ContentFile(img_bytes), save=False)
+    except Exception:
+        # Silenciosamente ignora (PDF corrupto, etc.)
+        pass
+
+# ---------------------------------------------------------------------------
+# MODELOS
+# ---------------------------------------------------------------------------
 
 class Document(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='documents'
+        related_name="documents",
     )
     title = models.CharField(max_length=200, verbose_name="Título")
     uploaded_at = models.DateTimeField(auto_now_add=True)
     file = models.FileField(
-        upload_to='documents/',
+        upload_to="documents/",
         verbose_name="Archivo",
         help_text="Sube el archivo",
-        storage=MediaStorage()
+        storage=MediaStorage(),
     )
     cover = models.ImageField(
-        upload_to='documents_covers/',
+        upload_to="documents_covers/",
         null=True,
         blank=True,
-        verbose_name="Portada",
-        storage=MediaStorage()
+        verbose_name="Portada (auto)",
+        storage=MediaStorage(),
     )
 
     def __str__(self):
         return self.title
 
-    # Si ya tienes otro mecanismo que genera cover para Document,
-    # puedes omitir este save(). Lo incluyo aquí por si quieres
-    # auto-generar también para Document con PyMuPDF.
     def save(self, *args, **kwargs):
+        initial = self.pk is None
         super().save(*args, **kwargs)
 
-        if self.file and self.file.name.lower().endswith('.pdf') and not self.cover:
-            try:
-                doc = fitz.open(self.file.path)
-                page = doc.load_page(0)
-                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
-                img_data = pix.tobytes("jpeg")
-                doc.close()
-
-                buf = BytesIO(img_data)
-                filename = f"{self.pk}_doc_cover.jpg"
-                self.cover.save(filename, ContentFile(buf.read()), save=False)
-                buf.close()
-                super().save(update_fields=['cover'])
-            except Exception:
-                pass
+        # Genera portada sólo tras tener PK y archivo subido
+        if initial and self.file:
+            _generate_cover(self, "file", "doc")
+            if self.cover and not kwargs.get("update_fields"):
+                super().save(update_fields=["cover"])
 
 
 class FAQ(models.Model):
@@ -92,51 +125,38 @@ class HelpDocument(models.Model):
         blank=True,
         null=True,
         verbose_name="Resumen",
-        help_text="Escribe un breve resumen del documento"
+        help_text="Escribe un breve resumen del documento",
     )
     file = models.FileField(
-        upload_to='help_docs/',
+        upload_to="help_docs/",
         blank=True,
         null=True,
         verbose_name="Archivo PDF",
         help_text="Sube el archivo en PDF",
-        storage=MediaStorage()
+        storage=MediaStorage(),
     )
     cover = models.ImageField(
-        upload_to='help_docs_covers/',
+        upload_to="help_docs_covers/",
         null=True,
         blank=True,
-        verbose_name="Portada",
-        help_text="Miniatura generada a partir de la primera página del PDF",
-        storage=MediaStorage()
+        verbose_name="Portada (auto)",
+        storage=MediaStorage(),
     )
     tags = models.ManyToManyField(
         Tag,
-        related_name='help_documents',
+        related_name="help_documents",
         blank=True,
-        verbose_name="Etiquetas"
+        verbose_name="Etiquetas",
     )
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
-        # Guardamos primero el HelpDocument para disponer de file.path
+        initial = self.pk is None
         super().save(*args, **kwargs)
 
-        # Si es un PDF y aún no tiene portada, la generamos
-        if self.file and self.file.name.lower().endswith('.pdf') and not self.cover:
-            try:
-                doc = fitz.open(self.file.path)
-                page = doc.load_page(0)
-                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
-                img_data = pix.tobytes("jpeg")
-                doc.close()
-
-                buf = BytesIO(img_data)
-                filename = f"{self.pk}_help_cover.jpg"
-                self.cover.save(filename, ContentFile(buf.read()), save=False)
-                buf.close()
-                super().save(update_fields=['cover'])
-            except Exception:
-                pass
+        if initial and self.file:
+            _generate_cover(self, "file", "help")
+            if self.cover and not kwargs.get("update_fields"):
+                super().save(update_fields=["cover"])

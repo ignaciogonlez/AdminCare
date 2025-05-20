@@ -15,27 +15,51 @@ import fitz
 from django.core.files.base import ContentFile
 import os
 
+# ------------------------------------------------- #
+# UTILIDAD: genera miniatura de la primera página   #
+# ------------------------------------------------- #
+
+def generar_portada_pdf(instance):
+    """Recibe un objeto con campos `file` y `cover` y extrae miniatura."""
+    if not instance.file or not instance.file.name.lower().endswith('.pdf'):
+        return
+
+    # Si ya tiene cover, no hacemos nada
+    if instance.cover and instance.cover.name:
+        return
+
+    # Leemos el PDF completo (compatible con S3)
+    instance.file.open('rb')
+    data = instance.file.read()
+    instance.file.close()
+
+    pdf = fitz.open(stream=data, filetype='pdf')
+    if pdf.page_count < 1:
+        pdf.close()
+        return
+
+    page = pdf.load_page(0)
+    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # 2× calidad
+    portada_bytes = pix.tobytes('jpeg')
+    pdf.close()
+
+    filename = f"{os.path.splitext(os.path.basename(instance.file.name))[0]}_cover.jpg"
+    instance.cover.save(filename, ContentFile(portada_bytes))
+    instance.save(update_fields=['cover'])
+
 
 # ---------------------------------------------------------------------
 # Logout con confirmación
 # ---------------------------------------------------------------------
 class LogoutConfirmView(LogoutView):
-    """
-    GET  → muestra 'logout_confirm.html'.
-    POST → cierra sesión y redirige a 'index'.
-    """
-
     template_name = 'logout_confirm.html'
     next_page = 'index'
-    # -----  Punto clave:  permitir GET además de POST  -----
     http_method_names = ['get', 'post', 'head', 'options', 'trace']
 
     def get(self, request, *args, **kwargs):
-        """Renderiza la plantilla de confirmación sin cerrar sesión."""
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
-        """Hace logout, añade mensaje y continúa con el flujo normal."""
         messages.success(request, "Has cerrado sesión correctamente.")
         return super().post(request, *args, **kwargs)
 
@@ -43,48 +67,19 @@ class LogoutConfirmView(LogoutView):
 # ---------------------------------------------------------------------
 # Vistas de la aplicación
 # ---------------------------------------------------------------------
+
 def index(request):
-    """Página de Inicio: Explicación del proyecto y enlaces a las secciones."""
     return render(request, 'index.html')
 
 
 def faqs(request):
-    """Muestra únicamente la lista de FAQs, sin permitir modificaciones."""
     faqs_list = FAQ.objects.all()
     return render(request, 'faqs.html', {'faqs': faqs_list})
 
 
-def generar_portada_pdf(document):
-    """
-    Si el archivo es PDF, guarda la primera página en 'document.cover'.
-    """
-    if not document.file.name.lower().endswith('.pdf'):
-        return
-
-    data = document.file.read()
-    doc = fitz.Document(stream=data)
-
-    if doc.page_count < 1:
-        doc.close()
-        return
-
-    page = doc.load_page(0)
-    pix = page.get_pixmap()
-    doc.close()
-
-    portada_bytes = pix.tobytes("png")
-    cover_filename = (
-        f"{os.path.splitext(os.path.basename(document.file.name))[0]}_cover.png"
-    )
-    document.cover.save(cover_filename, ContentFile(portada_bytes))
-    document.save()
-
-
 @login_required
 def documentos(request):
-    """
-    Gestión de documentos del usuario.
-    """
+    """Gestión de documentos del usuario."""
     if request.method == 'POST' and request.FILES.get('file'):
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
@@ -92,6 +87,7 @@ def documentos(request):
             new_doc.user = request.user
             new_doc.save()
 
+            # Genera miniatura para Document
             generar_portada_pdf(new_doc)
 
             messages.success(request, "Documento subido correctamente.")
@@ -105,21 +101,17 @@ def documentos(request):
             Q(title__icontains=query), user=request.user
         ).order_by('-uploaded_at')
     else:
-        documents = Document.objects.filter(
-            user=request.user
-        ).order_by('-uploaded_at')
+        documents = Document.objects.filter(user=request.user).order_by('-uploaded_at')
 
-    context = {
+    return render(request, 'documentos.html', {
         'form': form,
         'documents': documents,
         'query': query,
-    }
-    return render(request, 'documentos.html', context)
+    })
 
 
 @login_required
 def eliminar_documento(request, doc_id):
-    """Eliminar un documento si pertenece al usuario o si el usuario es staff."""
     doc = get_object_or_404(Document, id=doc_id)
     if doc.user == request.user or request.user.is_staff:
         doc.delete()
@@ -130,6 +122,7 @@ def eliminar_documento(request, doc_id):
 
 
 # ---------------- Sección Ayudas ----------------
+
 def ayudas(request):
     return render(request, 'ayudas.html')
 
@@ -143,40 +136,32 @@ def _docs_por_tag(nombre_tag):
 
 
 def ayuda_experiencia_familiar(request):
-    return render(
-        request,
-        'ayudas_experiencia_familiar.html',
-        {'docs': _docs_por_tag('experiencia_familiar')}
-    )
+    return render(request, 'ayudas_experiencia_familiar.html', {
+        'docs': _docs_por_tag('experiencia_familiar')
+    })
 
 
 def ayuda_autonomica(request):
-    return render(
-        request,
-        'ayudas_autonomica.html',
-        {'docs': _docs_por_tag('autonomica')}
-    )
+    return render(request, 'ayudas_autonomica.html', {
+        'docs': _docs_por_tag('autonomica')
+    })
 
 
 def ayuda_estatal(request):
-    return render(
-        request,
-        'ayudas_estatal.html',
-        {'docs': _docs_por_tag('estatal')}
-    )
+    return render(request, 'ayudas_estatal.html', {
+        'docs': _docs_por_tag('estatal')
+    })
 
 
 def ayuda_privada(request):
-    return render(
-        request,
-        'ayudas_privada.html',
-        {'docs': _docs_por_tag('privada')}
-    )
+    return render(request, 'ayudas_privada.html', {
+        'docs': _docs_por_tag('privada')
+    })
 
 
 # ---------------- Login / Registro ----------------
+
 def login_view(request):
-    """Vista de inicio de sesión."""
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -190,17 +175,13 @@ def login_view(request):
 
 
 def register_view(request):
-    """Registro de usuarios (opcional)."""
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-            messages.success(
-                request,
-                "Usuario creado correctamente. Ahora puedes iniciar sesión."
-            )
+            messages.success(request, "Usuario creado correctamente. Ahora puedes iniciar sesión.")
             return redirect('login')
     else:
         form = UserRegisterForm()
@@ -208,11 +189,9 @@ def register_view(request):
 
 
 # ---------------- Panel de administración interno ----------------
+
 @user_passes_test(lambda u: u.is_staff)
 def admin_panel(request):
-    """
-    Vista que solo pueden ver usuarios con is_staff=True.
-    """
     help_docs = HelpDocument.objects.all()
     tags = Tag.objects.all()
     faqs_list = FAQ.objects.all()
@@ -226,7 +205,9 @@ def admin_panel(request):
         if 'create_helpdoc' in request.POST:
             hd_form = HelpDocumentForm(request.POST, request.FILES)
             if hd_form.is_valid():
-                hd_form.save()
+                new_help = hd_form.save()
+                # Genera miniatura para HelpDocument
+                generar_portada_pdf(new_help)
                 messages.success(request, "Documento de ayuda creado.")
                 return redirect('admin_panel')
 
@@ -267,12 +248,11 @@ def admin_panel(request):
             messages.success(request, "FAQ eliminada correctamente.")
             return redirect('admin_panel')
 
-    context = {
+    return render(request, 'admin_panel.html', {
         'help_docs': help_docs,
         'help_doc_form': help_doc_form,
         'tags': tags,
         'tag_form': tag_form,
         'faqs_list': faqs_list,
         'faq_form': faq_form,
-    }
-    return render(request, 'admin_panel.html', context)
+    })
