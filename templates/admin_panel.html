@@ -6,29 +6,44 @@
 
 <!-- Sección HelpDocuments -->
 <h2>Gestionar Documentos de Ayuda</h2>
-<ul>
-  {% for hd in help_docs %}
-    <li>
-      <strong>{{ hd.title }}</strong>
-      {% if hd.file %}
-        <br/><a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
-      {% endif %}
-      <form method="POST" style="display:inline;">
-        {% csrf_token %}
-        <input type="hidden" name="delete_helpdoc_id" value="{{ hd.id }}">
-        <button type="submit" class="btn-trash" title="Eliminar">
-          <!-- Ícono de papelera (SVG) -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
-            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
-          </svg>
-        </button>
-      </form>
-    </li>
-  {% endfor %}
-</ul>
 
-<form method="POST" enctype="multipart/form-data">
+{% comment %} Agrupamos por cada etiqueta con <details> para colapsar {% endcomment %}
+{% for tag in tags %}
+<details style="margin-bottom:1rem;">
+  <summary style="cursor: pointer; font-weight: bold;">
+    {{ tag.name }}
+  </summary>
+  <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+    {% for hd in help_docs %}
+      {% if tag in hd.tags.all %}
+      <li style="margin-bottom: 0.5rem;">
+        <strong>{{ hd.title }}</strong>
+        {% if hd.file %}
+          <br/>
+          <a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
+        {% endif %}
+        <form method="POST" style="display:inline;">
+          {% csrf_token %}
+          <input type="hidden" name="delete_helpdoc_id" value="{{ hd.id }}">
+          <button type="submit" class="btn-trash" title="Eliminar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
+            </svg>
+          </button>
+        </form>
+      </li>
+      {% endif %}
+    {% endfor %}
+    {% comment %} Si no hay documentos para esta etiqueta {% endcomment %}
+    {% if not help_docs|dictsort:"title"|yesno:"yes,no" %}
+      <li>No hay documentos en esta categoría.</li>
+    {% endif %}
+  </ul>
+</details>
+{% endfor %}
+
+<form method="POST" enctype="multipart/form-data" style="margin-top: 1rem;">
   {% csrf_token %}
   <p>
     {{ help_doc_form.title.label_tag }}<br>
@@ -42,7 +57,7 @@
     {{ help_doc_form.tags.label_tag }}<br>
     {{ help_doc_form.tags }}
   </p>
-  <button type="submit" name="create_helpdoc">Crear Documento de Ayuda</button>
+  <button type="submit" name="create_helpdoc" class="btn">Crear Documento de Ayuda</button>
 </form>
 
 <hr/>
@@ -57,7 +72,6 @@
         {% csrf_token %}
         <input type="hidden" name="delete_tag_id" value="{{ tg.id }}">
         <button type="submit" class="btn-trash" title="Eliminar">
-          <!-- SVG idéntico al anterior -->
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
             <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
             <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
@@ -70,37 +84,41 @@
 <form method="POST">
   {% csrf_token %}
   {{ tag_form.as_p }}
-  <button type="submit" name="create_tag">Crear Tag</button>
+  <button type="submit" name="create_tag" class="btn">Crear Tag</button>
 </form>
 
 <hr/>
 
 <!-- Sección FAQs -->
 <h2>Gestionar FAQs</h2>
-<ul>
-  {% for faq in faqs_list %}
-    <li>
-      <strong>{{ faq.question }}</strong><br>
-      {{ faq.answer }}
-      <form method="POST" style="display:inline;">
-        {% csrf_token %}
-        <input type="hidden" name="delete_faq_id" value="{{ faq.id }}">
-        <button type="submit" class="btn-trash" title="Eliminar">
-          <!-- SVG mismo que arriba -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
-            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
-          </svg>
-        </button>
-      </form>
-    </li>
-    <hr/>
-  {% endfor %}
-</ul>
+
+{% for faq in faqs_list %}
+<details style="margin-bottom:0.5rem;">
+  <summary style="cursor: pointer; font-weight: bold;">
+    {{ faq.question }}
+  </summary>
+  <div style="margin-left: 1.5rem; margin-top: 0.5rem;">
+    <p>{{ faq.answer }}</p>
+    <form method="POST" style="display:inline;">
+      {% csrf_token %}
+      <input type="hidden" name="delete_faq_id" value="{{ faq.id }}">
+      <button type="submit" class="btn-trash" title="Eliminar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
+          <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+          <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</details>
+{% empty %}
+<p>No hay FAQs.</p>
+{% endfor %}
+
 <form method="POST">
   {% csrf_token %}
   {{ faq_form.as_p }}
-  <button type="submit" name="create_faq">Crear FAQ</button>
+  <button type="submit" name="create_faq" class="btn">Crear FAQ</button>
 </form>
 
 <hr/>
@@ -112,4 +130,5 @@
     <button type="submit" class="btn">Cerrar Sesión</button>
   </form>
 </div>
+
 {% endblock %}
