@@ -35,8 +35,9 @@ class HelpDocumentForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False,
-        label="Etiquetas"
+        required=True,
+        label="Etiquetas",
+        error_messages={'required': 'Selecciona al menos una etiqueta.'}
     )
 
     class Meta:
