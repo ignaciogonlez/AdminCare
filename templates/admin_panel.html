@@ -12,22 +12,56 @@
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="card" style="padding:1rem; margin-bottom:1rem;">
+
+      {# Errores no asociados a un campo concreto #}
+      {% if help_doc_form.non_field_errors %}
+        <ul class="errorlist">
+          {% for err in help_doc_form.non_field_errors %}
+            <li>{{ err }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
       <p>
         {{ help_doc_form.title.label_tag }}<br>
         {{ help_doc_form.title }}
+        {% if help_doc_form.title.errors %}
+          <ul class="errorlist">
+            {% for err in help_doc_form.title.errors %}
+              <li>{{ err }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
       </p>
       <p>
         {{ help_doc_form.file.label_tag }}<br>
         {{ help_doc_form.file }}
+        {% if help_doc_form.file.errors %}
+          <ul class="errorlist">
+            {% for err in help_doc_form.file.errors %}
+              <li>{{ err }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
       </p>
       <p>
         {{ help_doc_form.tags.label_tag }}<br>
         {{ help_doc_form.tags }}
+        {% if help_doc_form.tags.errors %}
+          <ul class="errorlist">
+            {% for err in help_doc_form.tags.errors %}
+              <li>{{ err }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
       </p>
+
       <button type="submit" name="create_helpdoc" class="btn">Crear Documento de Ayuda</button>
     </div>
   </form>
 </section>
+
+<hr/>
 
 {# 2) Desplegables para Documentos de Ayuda por etiqueta #}
 <section>
@@ -37,7 +71,6 @@
     <summary style="cursor:pointer; font-weight:bold;">
       {{ tag.name }}
     </summary>
-
     <ul style="margin-left:1.5rem; margin-top:0.5rem;">
       {% for hd in help_docs %}
         {% if tag in hd.tags.all %}
@@ -54,8 +87,6 @@
         </li>
         {% endif %}
       {% endfor %}
-      {# Si quieres un mensaje cuando NO hay ninguno, simplemente descomenta estas líneas: #}
-      {# <li>No hay documentos en esta categoría.</li> #}
     </ul>
   </details>
   {% endfor %}
@@ -69,12 +100,18 @@
   <form method="POST">
     {% csrf_token %}
     <div class="card" style="padding:1rem; margin-bottom:1rem;">
+
+      {{ tag_form.non_field_errors }}
       {{ tag_form.name.label_tag }}<br>
-      {{ tag_form.name }}<br><br>
+      {{ tag_form.name }}
+      {{ tag_form.name.errors }}
+
       <button type="submit" name="create_tag" class="btn">Crear Tag</button>
     </div>
   </form>
 </section>
+
+<hr/>
 
 {# 4) Desplegable lista de Tags #}
 <section>
@@ -108,18 +145,25 @@
   <form method="POST">
     {% csrf_token %}
     <div class="card" style="padding:1rem; margin-bottom:1rem;">
+
+      {{ faq_form.non_field_errors }}
       <p>
         {{ faq_form.question.label_tag }}<br>
         {{ faq_form.question }}
+        {{ faq_form.question.errors }}
       </p>
       <p>
         {{ faq_form.answer.label_tag }}<br>
         {{ faq_form.answer }}
+        {{ faq_form.answer.errors }}
       </p>
+
       <button type="submit" name="create_faq" class="btn">Crear FAQ</button>
     </div>
   </form>
 </section>
+
+<hr/>
 
 {# 6) Desplegable lista de FAQs #}
 <section>
