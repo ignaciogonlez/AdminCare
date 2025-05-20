@@ -1,3 +1,5 @@
+# appAdminCare/forms.py – versión sin campo “Resumen”
+
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -39,15 +41,13 @@ class HelpDocumentForm(forms.ModelForm):
 
     class Meta:
         model = HelpDocument
-        fields = ['title', 'summary', 'file', 'tags']
+        fields = ['title', 'file', 'tags']
         labels = {
             'title': 'Título',
-            'summary': 'Resumen',
             'file': 'Archivo PDF',
         }
         help_texts = {
             'title': '',
-            'summary': '',
             'file': '',
         }
 
@@ -63,7 +63,6 @@ class TagForm(forms.ModelForm):
         }
 
 class UserRegisterForm(forms.ModelForm):
-    # Hacemos obligatorio el email y definimos su campo
     email = forms.EmailField(
         required=True,
         label="Correo electrónico",
@@ -93,7 +92,6 @@ class UserRegisterForm(forms.ModelForm):
         return email
 
     def save(self, commit=True):
-        # Nos aseguramos de guardar la contraseña hasheada
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
         user.set_password(self.cleaned_data['password'])

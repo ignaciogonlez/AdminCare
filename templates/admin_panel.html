@@ -10,7 +10,6 @@
   {% for hd in help_docs %}
     <li>
       <strong>{{ hd.title }}</strong>
-      <!-- Si hay archivo, mostrar enlace -->
       {% if hd.file %}
         <br/><a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
       {% endif %}
@@ -28,9 +27,21 @@
     </li>
   {% endfor %}
 </ul>
+
 <form method="POST" enctype="multipart/form-data">
   {% csrf_token %}
-  {{ help_doc_form.as_p }}
+  <p>
+    {{ help_doc_form.title.label_tag }}<br>
+    {{ help_doc_form.title }}
+  </p>
+  <p>
+    {{ help_doc_form.file.label_tag }}<br>
+    {{ help_doc_form.file }}
+  </p>
+  <p>
+    {{ help_doc_form.tags.label_tag }}<br>
+    {{ help_doc_form.tags }}
+  </p>
   <button type="submit" name="create_helpdoc">Crear Documento de Ayuda</button>
 </form>
 
@@ -46,7 +57,7 @@
         {% csrf_token %}
         <input type="hidden" name="delete_tag_id" value="{{ tg.id }}">
         <button type="submit" class="btn-trash" title="Eliminar">
-          <!-- Ícono de papelera (SVG) -->
+          <!-- SVG idéntico al anterior -->
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
             <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
             <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
@@ -69,22 +80,16 @@
 <ul>
   {% for faq in faqs_list %}
     <li>
-      <strong>{{ faq.question }}</strong>
-      <br/>{{ faq.answer }}
+      <strong>{{ faq.question }}</strong><br>
+      {{ faq.answer }}
       <form method="POST" style="display:inline;">
         {% csrf_token %}
         <input type="hidden" name="delete_faq_id" value="{{ faq.id }}">
         <button type="submit" class="btn-trash" title="Eliminar">
-          <!-- Ícono de papelera (SVG) -->
+          <!-- SVG mismo que arriba -->
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0  0 1-.5-.5z"/>
-            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 
-            2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 
-            0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 
-            0 1 1 1zM4.118 4 4 4.059V13a1 1 
-            0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 
-            4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 
-            0 0 0 0-1h-11z"/>
+            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
           </svg>
         </button>
       </form>

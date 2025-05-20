@@ -1,4 +1,4 @@
-# appAdminCare/models.py – versión robusta para S3 y filesystem
+# appAdminCare/models.py – versión sin campo “Resumen”
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -28,40 +28,29 @@ else:
 # ---------------------------------------------------------------------------
 
 def _generate_cover(instance, field_name: str, prefix: str):
-    """Extrae la primera página del PDF y la guarda en el ImageField indicado.
-
-    - Lee desde el propio FileField (funciona con S3 y local).
-    - Guarda la imagen en JPG en el mismo storage.
-    """
+    """Extrae la primera página del PDF y la guarda en el ImageField indicado."""
     file_field = getattr(instance, field_name)
     if not file_field or file_field.name is None:
-        return  # no file aún
-
+        return
     name_lower = file_field.name.lower()
     if not name_lower.endswith(".pdf"):
-        return  # solo PDFs
-
-    # No sobrescribas si ya existe portada
+        return
     cover_field = instance.cover if hasattr(instance, "cover") else None
     if cover_field and cover_field.name:
         return
 
     try:
-        # Leemos el PDF en memoria (vale para S3 o FS)
         file_field.open("rb")
         pdf_bytes = file_field.read()
         file_field.close()
-
         pdf_doc = fitz.open(stream=pdf_bytes, filetype="pdf")
         page = pdf_doc.load_page(0)
-        pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # 2× resolución
+        pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
         img_bytes = pix.tobytes("jpeg")
         pdf_doc.close()
-
         filename = f"{instance.pk}_{prefix}_cover.jpg"
         cover_field.save(filename, ContentFile(img_bytes), save=False)
     except Exception:
-        # Silenciosamente ignora (PDF corrupto, etc.)
         pass
 
 # ---------------------------------------------------------------------------
@@ -96,8 +85,6 @@ class Document(models.Model):
     def save(self, *args, **kwargs):
         initial = self.pk is None
         super().save(*args, **kwargs)
-
-        # Genera portada sólo tras tener PK y archivo subido
         if initial and self.file:
             _generate_cover(self, "file", "doc")
             if self.cover and not kwargs.get("update_fields"):
@@ -121,12 +108,6 @@ class Tag(models.Model):
 
 class HelpDocument(models.Model):
     title = models.CharField(max_length=200, verbose_name="Título")
-    summary = models.TextField(
-        blank=True,
-        null=True,
-        verbose_name="Resumen",
-        help_text="Escribe un breve resumen del documento",
-    )
     file = models.FileField(
         upload_to="help_docs/",
         blank=True,
@@ -155,7 +136,6 @@ class HelpDocument(models.Model):
     def save(self, *args, **kwargs):
         initial = self.pk is None
         super().save(*args, **kwargs)
-
         if initial and self.file:
             _generate_cover(self, "file", "help")
             if self.cover and not kwargs.get("update_fields"):
