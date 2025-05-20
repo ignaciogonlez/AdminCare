@@ -1,54 +1,110 @@
 {% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Ayuda Estatal - AdminCare{% endblock %}
+{% block title %}Panel de Administración{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<h1>Panel de Administración</h1>
 
-  <h1 class="mb-4">Ayuda Estatal</h1>
-  <p>Aquí se listan los documentos que tengan el tag "estatal".</p>
+<!-- Sección HelpDocuments -->
+<h2>Gestionar Documentos de Ayuda</h2>
+<ul>
+  {% for hd in help_docs %}
+    <li>
+      <strong>{{ hd.title }}</strong>
+      <!-- Si hay archivo, mostrar enlace -->
+      {% if hd.file %}
+        <br/><a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
+      {% endif %}
+      <form method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_helpdoc_id" value="{{ hd.id }}">
+        <button type="submit" class="btn-trash" title="Eliminar">
+          <!-- Ícono de papelera (SVG) -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
+          </svg>
+        </button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ help_doc_form.as_p }}
+  <button type="submit" name="create_helpdoc">Crear Documento de Ayuda</button>
+</form>
 
-  <hr/>
+<hr/>
 
-  <h2 class="mt-4 mb-3">Mis documentos estatales:</h2>
-  <ul class="documents-list">
-    {% for doc in docs %}
-      <li class="document-item">
-        <div class="doc-preview text-center mb-3">
-          {% if doc.cover %}
-            <a href="{{ doc.file.url }}" target="_blank">
-              <img
-                src="{{ doc.cover.url }}"
-                alt="Portada de {{ doc.title }}"
-                class="img-fluid doc-thumbnail"
-              >
-            </a>
-          {% else %}
-            <a
-              href="{{ doc.file.url }}"
-              target="_blank"
-              class="btn btn-outline-secondary"
-            >
-              Ver/Descargar
-            </a>
-          {% endif %}
-        </div>
+<!-- Sección Tags -->
+<h2>Gestionar Tags</h2>
+<ul class="tags-list">
+  {% for tg in tags %}
+    <li>
+      {{ tg.name }}
+      <form method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_tag_id" value="{{ tg.id }}">
+        <button type="submit" class="btn-trash" title="Eliminar">
+          <!-- Ícono de papelera (SVG) -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
+          </svg>
+        </button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+<form method="POST">
+  {% csrf_token %}
+  {{ tag_form.as_p }}
+  <button type="submit" name="create_tag">Crear Tag</button>
+</form>
 
-        <div class="doc-details d-flex justify-content-between align-items-center">
-          <div class="doc-info">
-            <strong>{{ doc.title }}</strong><br>
-            {% if doc.uploaded_at %}
-            <small class="text-muted">{{ doc.uploaded_at|date:"d/m/Y H:i" }}</small>
-            {% endif %}
-          </div>
-          <!-- Quitamos acciones de eliminación -->
-        </div>
-      </li>
-    {% empty %}
-      <li class="document-item">No hay documentos estatales disponibles.</li>
-    {% endfor %}
-  </ul>
+<hr/>
 
+<!-- Sección FAQs -->
+<h2>Gestionar FAQs</h2>
+<ul>
+  {% for faq in faqs_list %}
+    <li>
+      <strong>{{ faq.question }}</strong>
+      <br/>{{ faq.answer }}
+      <form method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_faq_id" value="{{ faq.id }}">
+        <button type="submit" class="btn-trash" title="Eliminar">
+          <!-- Ícono de papelera (SVG) -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0  0 1-.5-.5z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 
+            2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 
+            0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 
+            0 1 1 1zM4.118 4 4 4.059V13a1 1 
+            0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 
+            4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 
+            0 0 0 0-1h-11z"/>
+          </svg>
+        </button>
+      </form>
+    </li>
+    <hr/>
+  {% endfor %}
+</ul>
+<form method="POST">
+  {% csrf_token %}
+  {{ faq_form.as_p }}
+  <button type="submit" name="create_faq">Crear FAQ</button>
+</form>
+
+<hr/>
+
+<!-- Botón para cerrar sesión convertido en form POST -->
+<div style="margin-top: 2rem;">
+  <form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn">Cerrar Sesión</button>
+  </form>
 </div>
 {% endblock %}
