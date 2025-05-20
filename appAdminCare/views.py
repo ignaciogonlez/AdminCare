@@ -1,3 +1,5 @@
+# appAdminCare/views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -24,11 +26,9 @@ def generar_portada_pdf(instance):
     if not instance.file or not instance.file.name.lower().endswith('.pdf'):
         return
 
-    # Si ya tiene cover, no hacemos nada
     if instance.cover and instance.cover.name:
         return
 
-    # Leemos el PDF completo (compatible con S3)
     instance.file.open('rb')
     data = instance.file.read()
     instance.file.close()
@@ -39,7 +39,7 @@ def generar_portada_pdf(instance):
         return
 
     page = pdf.load_page(0)
-    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # 2× calidad
+    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
     portada_bytes = pix.tobytes('jpeg')
     pdf.close()
 
@@ -86,10 +86,7 @@ def documentos(request):
             new_doc = form.save(commit=False)
             new_doc.user = request.user
             new_doc.save()
-
-            # Genera miniatura para Document
             generar_portada_pdf(new_doc)
-
             messages.success(request, "Documento subido correctamente.")
             return redirect('documentos')
     else:
@@ -192,57 +189,64 @@ def register_view(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def admin_panel(request):
-    help_docs = HelpDocument.objects.all()
-    tags = Tag.objects.all()
-    faqs_list = FAQ.objects.all()
+    help_docs    = HelpDocument.objects.all()
+    tags         = Tag.objects.all()
+    faqs_list    = FAQ.objects.all()
 
+    # inicializamos forms vacíos
     help_doc_form = HelpDocumentForm()
-    tag_form = TagForm()
-    faq_form = FAQForm()
+    tag_form      = TagForm()
+    faq_form      = FAQForm()
 
     if request.method == 'POST':
-        # Crear HelpDocument
+        # CREAR HelpDocument
         if 'create_helpdoc' in request.POST:
             hd_form = HelpDocumentForm(request.POST, request.FILES)
             if hd_form.is_valid():
                 new_help = hd_form.save()
-                # Genera miniatura para HelpDocument
                 generar_portada_pdf(new_help)
                 messages.success(request, "Documento de ayuda creado.")
                 return redirect('admin_panel')
+            else:
+                # dejamos el form con errores para mostrar mensajes
+                help_doc_form = hd_form
 
-        # Eliminar HelpDocument
-        if 'delete_helpdoc_id' in request.POST:
+        # ELIMINAR HelpDocument
+        elif 'delete_helpdoc_id' in request.POST:
             hd = get_object_or_404(HelpDocument, id=request.POST['delete_helpdoc_id'])
             hd.delete()
             messages.success(request, "Documento de ayuda eliminado.")
             return redirect('admin_panel')
 
-        # Crear Tag
-        if 'create_tag' in request.POST:
+        # CREAR Tag
+        elif 'create_tag' in request.POST:
             t_form = TagForm(request.POST)
             if t_form.is_valid():
                 t_form.save()
                 messages.success(request, "Tag creado.")
                 return redirect('admin_panel')
+            else:
+                tag_form = t_form
 
-        # Eliminar Tag
-        if 'delete_tag_id' in request.POST:
+        # ELIMINAR Tag
+        elif 'delete_tag_id' in request.POST:
             t = get_object_or_404(Tag, id=request.POST['delete_tag_id'])
             t.delete()
             messages.success(request, "Tag eliminado.")
             return redirect('admin_panel')
 
-        # Crear FAQ
-        if 'create_faq' in request.POST:
+        # CREAR FAQ
+        elif 'create_faq' in request.POST:
             f_form = FAQForm(request.POST)
             if f_form.is_valid():
                 f_form.save()
                 messages.success(request, "FAQ creada correctamente.")
                 return redirect('admin_panel')
+            else:
+                faq_form = f_form
 
-        # Eliminar FAQ
-        if 'delete_faq_id' in request.POST:
+        # ELIMINAR FAQ
+        elif 'delete_faq_id' in request.POST:
             faq_to_delete = get_object_or_404(FAQ, id=request.POST['delete_faq_id'])
             faq_to_delete.delete()
             messages.success(request, "FAQ eliminada correctamente.")
