@@ -4,127 +4,156 @@
 {% block content %}
 <h1>Panel de Administración</h1>
 
-<!-- Sección HelpDocuments -->
-<h2>Gestionar Documentos de Ayuda</h2>
-{% for tag in tags %}
-<details style="margin-bottom:1rem;">
-  <summary style="cursor: pointer; font-weight: bold;">
-    {{ tag.name }}
-  </summary>
-  <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
-    {% for hd in help_docs %}
-      {% if tag in hd.tags.all %}
-      <li style="margin-bottom: 0.5rem;">
-        <strong>{{ hd.title }}</strong>
-        {% if hd.file %}
-          <br/><a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
+<hr/>
+
+{# 1) Formulario Crear Documento de Ayuda #}
+<section>
+  <h2>Crear Nuevo Documento de Ayuda</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card" style="padding:1rem; margin-bottom:1rem;">
+      <p>
+        {{ help_doc_form.title.label_tag }}<br>
+        {{ help_doc_form.title }}
+      </p>
+      <p>
+        {{ help_doc_form.file.label_tag }}<br>
+        {{ help_doc_form.file }}
+      </p>
+      <p>
+        {{ help_doc_form.tags.label_tag }}<br>
+        {{ help_doc_form.tags }}
+      </p>
+      <button type="submit" name="create_helpdoc" class="btn">Crear Documento de Ayuda</button>
+    </div>
+  </form>
+</section>
+
+{# 2) Desplegables para Documentos de Ayuda por etiqueta #}
+<section>
+  <h2>Gestionar Documentos de Ayuda</h2>
+  {% for tag in tags %}
+  <details style="margin-bottom:0.5rem;">
+    <summary style="cursor:pointer; font-weight:bold;">
+      {{ tag.name }}
+    </summary>
+    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+      {% for hd in help_docs %}
+        {% if tag in hd.tags.all %}
+        <li style="margin-bottom:0.5rem;">
+          <strong>{{ hd.title }}</strong>
+          {% if hd.file %}<br>
+            <a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
+          {% endif %}
+          <form method="POST" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="delete_helpdoc_id" value="{{ hd.id }}">
+            <button type="submit" class="btn-trash" title="Eliminar">🗑️</button>
+          </form>
+        </li>
         {% endif %}
+      {% endfor %}
+      {% if help_docs|filter:"tags__id=tag.id"|length == 0 %}
+        <li>No hay documentos en esta categoría.</li>
+      {% endif %}
+    </ul>
+  </details>
+  {% endfor %}
+</section>
+
+<hr/>
+
+{# 3) Formulario Crear Tag #}
+<section>
+  <h2>Crear Nuevo Tag</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="card" style="padding:1rem; margin-bottom:1rem;">
+      {{ tag_form.name.label_tag }}<br>
+      {{ tag_form.name }}<br><br>
+      <button type="submit" name="create_tag" class="btn">Crear Tag</button>
+    </div>
+  </form>
+</section>
+
+{# 4) Desplegable lista de Tags #}
+<section>
+  <h2>Gestionar Tags</h2>
+  <details>
+    <summary style="cursor:pointer; font-weight:bold;">
+      Ver/Eliminar Tags
+    </summary>
+    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+      {% for tg in tags %}
+      <li style="margin-bottom:0.5rem;">
+        {{ tg.name }}
         <form method="POST" style="display:inline;">
           {% csrf_token %}
-          <input type="hidden" name="delete_helpdoc_id" value="{{ hd.id }}">
-          <button type="submit" class="btn-trash" title="Eliminar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
-              <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
-              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
-            </svg>
-          </button>
+          <input type="hidden" name="delete_tag_id" value="{{ tg.id }}">
+          <button type="submit" class="btn-trash" title="Eliminar">🗑️</button>
         </form>
       </li>
-      {% endif %}
-    {% endfor %}
-    {% if not help_docs|dictsort:"title"|yesno:"yes,no" %}
-      <li>No hay documentos en esta categoría.</li>
-    {% endif %}
-  </ul>
-</details>
-{% endfor %}
-
-<form method="POST" enctype="multipart/form-data" style="margin-top: 1rem;">
-  {% csrf_token %}
-  <p>
-    {{ help_doc_form.title.label_tag }}<br>
-    {{ help_doc_form.title }}
-  </p>
-  <p>
-    {{ help_doc_form.file.label_tag }}<br>
-    {{ help_doc_form.file }}
-  </p>
-  <p>
-    {{ help_doc_form.tags.label_tag }}<br>
-    {{ help_doc_form.tags }}
-  </p>
-  <button type="submit" name="create_helpdoc" class="btn">Crear Documento de Ayuda</button>
-</form>
+      {% empty %}
+      <li>No hay tags.</li>
+      {% endfor %}
+    </ul>
+  </details>
+</section>
 
 <hr/>
 
-<!-- Sección Tags -->
-<h2>Gestionar Tags</h2>
-<ul class="tags-list">
-  {% for tg in tags %}
-    <li>
-      {{ tg.name }}
-      <form method="POST" style="display:inline;">
-        {% csrf_token %}
-        <input type="hidden" name="delete_tag_id" value="{{ tg.id }}">
-        <button type="submit" class="btn-trash" title="Eliminar">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
-            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
-          </svg>
-        </button>
-      </form>
-    </li>
-  {% endfor %}
-</ul>
-<form method="POST">
-  {% csrf_token %}
-  {{ tag_form.as_p }}
-  <button type="submit" name="create_tag" class="btn">Crear Tag</button>
-</form>
+{# 5) Formulario Crear FAQ #}
+<section>
+  <h2>Crear Nueva FAQ</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="card" style="padding:1rem; margin-bottom:1rem;">
+      <p>
+        {{ faq_form.question.label_tag }}<br>
+        {{ faq_form.question }}
+      </p>
+      <p>
+        {{ faq_form.answer.label_tag }}<br>
+        {{ faq_form.answer }}
+      </p>
+      <button type="submit" name="create_faq" class="btn">Crear FAQ</button>
+    </div>
+  </form>
+</section>
 
-<hr/>
-
-<!-- Sección FAQs en un único desplegable -->
-<details style="margin-bottom:1rem;">
-  <summary style="cursor: pointer; font-weight: bold; font-size:1.1rem;">
-    Gestionar FAQs
-  </summary>
-  <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
-    {% for faq in faqs_list %}
-      <li style="margin-bottom: 1rem;">
+{# 6) Desplegable lista de FAQs #}
+<section>
+  <h2>Gestionar FAQs</h2>
+  <details>
+    <summary style="cursor:pointer; font-weight:bold;">
+      Ver/Eliminar FAQs
+    </summary>
+    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
+      {% for faq in faqs_list %}
+      <li style="margin-bottom:0.5rem;">
         <strong>{{ faq.question }}</strong><br>
         {{ faq.answer }}<br>
         <form method="POST" style="display:inline;">
           {% csrf_token %}
           <input type="hidden" name="delete_faq_id" value="{{ faq.id }}">
-          <button type="submit" class="btn-trash" title="Eliminar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-trash" viewBox="0 0 16 16">
-              <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
-              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
-            </svg>
-          </button>
+          <button type="submit" class="btn-trash" title="Eliminar">🗑️</button>
         </form>
       </li>
-    {% empty %}
+      {% empty %}
       <li>No hay FAQs.</li>
-    {% endfor %}
-  </ul>
-
-  <form method="POST" style="margin-top: 1rem;">
-    {% csrf_token %}
-    {{ faq_form.as_p }}
-    <button type="submit" name="create_faq" class="btn">Crear FAQ</button>
-  </form>
-</details>
+      {% endfor %}
+    </ul>
+  </details>
+</section>
 
 <hr/>
 
-<!-- Botón para cerrar sesión convertido en form POST -->
-<div style="margin-top: 2rem;">
+{# 7) Botón Cerrar Sesión #}
+<div style="margin-top:2rem;">
   <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
     <button type="submit" class="btn">Cerrar Sesión</button>
   </form>
 </div>
+
 {% endblock %}
