@@ -4,11 +4,13 @@
 
 {% block title %}Ayudas Autonómicas – AdminCare{% endblock %}
 
+{# Inyectamos estilos para la imagen #}
 {% block extra_styles %}
 <style>
-  /* Ajusta la altura de la imagen para que coincida con el botón .btn-sm */
-  .flag-img {
-    height: 2rem;              /* Igual aproximado a la altura de btn-sm */
+  /* Hace que todas las banderas midan 1.5rem de alto y no se deformen */
+  img.flag-img {
+    height: 1.5rem !important;
+    width: auto !important;
     object-fit: contain;
   }
 </style>
@@ -28,6 +30,8 @@
             
             {# 2) Fila con imagen y botón #}
             <div class="d-flex justify-content-between align-items-center mt-auto">
+              
+              {# Bandera pequeña #}
               <a href="{% url 'ayuda_'|add:com.slug %}">
                 <img
                   src="{% static com.image %}"
@@ -35,6 +39,8 @@
                   class="flag-img"
                 >
               </a>
+              
+              {# Botón #}
               <a
                 href="{% url 'ayuda_'|add:com.slug %}"
                 class="btn btn-primary btn-sm"
