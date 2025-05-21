@@ -6,7 +6,7 @@
 
 <hr/>
 
-{# 1) Crear Nuevo Documento de Ayuda #}
+<!-- 1) Formulario Crear Documento de Ayuda -->
 <section>
   <h2>Crear Nuevo Documento de Ayuda</h2>
   <form method="POST" enctype="multipart/form-data">
@@ -35,43 +35,53 @@
 
 <hr/>
 
-{# 2) Gestionar Documentos de Ayuda (paginados) #}
+<!-- 2) Filtro por Etiqueta -->
 <section>
   <h2>Gestionar Documentos de Ayuda</h2>
-  {% for tag in tags %}
-  <details style="margin-bottom:0.5rem;">
-    <summary style="cursor:pointer; font-weight:bold;">
-      {{ tag.name }}
-    </summary>
-    <ul style="margin-left:1.5rem; margin-top:0.5rem;">
-      {% for hd in help_docs %}
-        {% if tag in hd.tags.all %}
-        <li style="margin-bottom:0.5rem;">
-          <strong>{{ hd.title }}</strong>
-          {% if hd.file %}
-            <br><a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
-          {% endif %}
-          <form method="POST" style="display:inline;">
-            {% csrf_token %}
-            <input type="hidden" name="delete_helpdoc_id" value="{{ hd.id }}">
-            <button type="submit" class="btn-trash" title="Eliminar">🗑️</button>
-          </form>
-        </li>
-        {% endif %}
+  <form method="get" style="margin-bottom:1rem;">
+    <label for="filter_tag">Filtrar por etiqueta:</label>
+    <select name="filter_tag" id="filter_tag" onchange="this.form.submit()">
+      <option value="" {% if not filter_tag %}selected{% endif %}>-- Todas --</option>
+      {% for tg in tags %}
+        <option value="{{ tg.id }}" {% if filter_tag == tg.id|stringformat:"s" %}selected{% endif %}>
+          {{ tg.name }}
+        </option>
       {% endfor %}
-    </ul>
-  </details>
-  {% endfor %}
+    </select>
+  </form>
 
-  {# Navegación de pági­nas #}
+  <!-- Listado paginado -->
+  <ul>
+    {% for hd in help_docs %}
+      <li style="margin-bottom:0.5rem;">
+        <strong>{{ hd.title }}</strong>
+        {% if hd.file %}
+          — <a href="{{ hd.file.url }}" target="_blank">Descargar/Ver</a>
+        {% endif %}
+        <form method="POST" style="display:inline;">
+          {% csrf_token %}
+          <input type="hidden" name="delete_helpdoc_id" value="{{ hd.id }}">
+          <button type="submit" class="btn-trash" title="Eliminar">🗑️</button>
+        </form>
+      </li>
+    {% empty %}
+      <li>No hay documentos.</li>
+    {% endfor %}
+  </ul>
+
+  <!-- Navegación de páginas -->
   {% if help_docs.has_other_pages %}
-  <nav style="margin:1rem 0; text-align:center;">
+  <nav style="margin-top:1rem; text-align:center;">
     {% if help_docs.has_previous %}
-      <a href="?page={{ help_docs.previous_page_number }}">« Anterior</a>
+      <a href="?page={{ help_docs.previous_page_number }}{% if filter_tag %}&filter_tag={{ filter_tag }}{% endif %}">
+        « Anterior
+      </a>
     {% endif %}
     Página {{ help_docs.number }} de {{ help_docs.paginator.num_pages }}
     {% if help_docs.has_next %}
-      <a href="?page={{ help_docs.next_page_number }}">Siguiente »</a>
+      <a href="?page={{ help_docs.next_page_number }}{% if filter_tag %}&filter_tag={{ filter_tag }}{% endif %}">
+        Siguiente »
+      </a>
     {% endif %}
   </nav>
   {% endif %}
@@ -79,7 +89,7 @@
 
 <hr/>
 
-{# 3) Crear Nuevo Tag #}
+<!-- 3) Crear Tag -->
 <section>
   <h2>Crear Nuevo Tag</h2>
   <form method="POST">
@@ -88,7 +98,7 @@
       {{ tag_form.non_field_errors }}
       {{ tag_form.name.label_tag }}<br>
       {{ tag_form.name }}<br>
-      {{ tag_form.name.errors }}
+      {{ tag_form.name.errors }}<br>
       <button type="submit" name="create_tag" class="btn">Crear Tag</button>
     </div>
   </form>
@@ -96,25 +106,23 @@
 
 <hr/>
 
-{# 4) Gestionar Tags #}
+<!-- 4) Gestionar Tags -->
 <section>
   <h2>Gestionar Tags</h2>
   <details>
-    <summary style="cursor:pointer; font-weight:bold;">
-      Ver/Eliminar Tags
-    </summary>
+    <summary style="cursor:pointer; font-weight:bold;">Ver/Eliminar Tags</summary>
     <ul style="margin-left:1.5rem; margin-top:0.5rem;">
       {% for tg in tags %}
-      <li style="margin-bottom:0.5rem;">
-        {{ tg.name }}
-        <form method="POST" style="display:inline;">
-          {% csrf_token %}
-          <input type="hidden" name="delete_tag_id" value="{{ tg.id }}">
-          <button type="submit" class="btn-trash" title="Eliminar">🗑️</button>
-        </form>
-      </li>
+        <li style="margin-bottom:0.5rem;">
+          {{ tg.name }}
+          <form method="POST" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="delete_tag_id" value="{{ tg.id }}">
+            <button type="submit" class="btn-trash" title="Eliminar">🗑️</button>
+          </form>
+        </li>
       {% empty %}
-      <li>No hay tags.</li>
+        <li>No hay tags.</li>
       {% endfor %}
     </ul>
   </details>
@@ -122,7 +130,7 @@
 
 <hr/>
 
-{# 5) Crear Nueva FAQ #}
+<!-- 5) Crear FAQ -->
 <section>
   <h2>Crear Nueva FAQ</h2>
   <form method="POST">
@@ -146,26 +154,24 @@
 
 <hr/>
 
-{# 6) Gestionar FAQs #}
+<!-- 6) Gestionar FAQs -->
 <section>
   <h2>Gestionar FAQs</h2>
   <details>
-    <summary style="cursor:pointer; font-weight:bold;">
-      Ver/Eliminar FAQs
-    </summary>
+    <summary style="cursor:pointer; font-weight:bold;">Ver/Eliminar FAQs</summary>
     <ul style="margin-left:1.5rem; margin-top:0.5rem;">
       {% for faq in faqs_list %}
-      <li style="margin-bottom:0.5rem;">
-        <strong>{{ faq.question }}</strong><br>
-        {{ faq.answer }}<br>
-        <form method="POST" style="display:inline;">
-          {% csrf_token %}
-          <input type="hidden" name="delete_faq_id" value="{{ faq.id }}">
-          <button type="submit" class="btn-trash" title="Eliminar">🗑️</button>
-        </form>
-      </li>
+        <li style="margin-bottom:0.5rem;">
+          <strong>{{ faq.question }}</strong><br>
+          {{ faq.answer }}<br>
+          <form method="POST" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="delete_faq_id" value="{{ faq.id }}">
+            <button type="submit" class="btn-trash" title="Eliminar">🗑️</button>
+          </form>
+        </li>
       {% empty %}
-      <li>No hay FAQs.</li>
+        <li>No hay FAQs.</li>
       {% endfor %}
     </ul>
   </details>
@@ -173,12 +179,11 @@
 
 <hr/>
 
-{# 7) Botón Cerrar Sesión #}
+<!-- 7) Cerrar Sesión -->
 <div style="margin-top:2rem;">
   <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
     <button type="submit" class="btn">Cerrar Sesión</button>
   </form>
 </div>
-
 {% endblock %}

@@ -15,8 +15,9 @@ import fitz  # PyMuPDF
 from django.core.files.base import ContentFile
 import os
 
+
 def generar_portada_pdf(instance):
-    """Recibe un objeto con campos `file` y `cover` y extrae miniatura JPEG."""
+    """Extrae miniatura JPEG de la primera página del PDF."""
     if not instance.file or not instance.file.name.lower().endswith('.pdf'):
         return
     if instance.cover and instance.cover.name:
@@ -171,9 +172,15 @@ def register_view(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def admin_panel(request):
-    # Paginación: 20 documentos por página
-    all_docs = HelpDocument.objects.all().order_by('-id')
-    paginator = Paginator(all_docs, 20)
+    # 1) Filtrado por etiqueta
+    filter_tag = request.GET.get('filter_tag')
+    if filter_tag:
+        docs_qs = HelpDocument.objects.filter(tags__id=filter_tag).order_by('-id')
+    else:
+        docs_qs = HelpDocument.objects.all().order_by('-id')
+
+    # 2) Paginación sobre la QS filtrada
+    paginator = Paginator(docs_qs, 20)
     page_number = request.GET.get('page')
     page_docs = paginator.get_page(page_number)
 
@@ -185,7 +192,6 @@ def admin_panel(request):
     faq_form      = FAQForm()
 
     if request.method == 'POST':
-        # Crear HelpDocument
         if 'create_helpdoc' in request.POST:
             hd_form = HelpDocumentForm(request.POST, request.FILES)
             if hd_form.is_valid():
@@ -195,14 +201,12 @@ def admin_panel(request):
                 return redirect('admin_panel')
             help_doc_form = hd_form
 
-        # Eliminar HelpDocument
         elif 'delete_helpdoc_id' in request.POST:
             hd = get_object_or_404(HelpDocument, id=request.POST['delete_helpdoc_id'])
             hd.delete()
             messages.success(request, "Documento de ayuda eliminado.")
             return redirect('admin_panel')
 
-        # Crear Tag
         elif 'create_tag' in request.POST:
             t_form = TagForm(request.POST)
             if t_form.is_valid():
@@ -211,14 +215,12 @@ def admin_panel(request):
                 return redirect('admin_panel')
             tag_form = t_form
 
-        # Eliminar Tag
         elif 'delete_tag_id' in request.POST:
             t = get_object_or_404(Tag, id=request.POST['delete_tag_id'])
             t.delete()
             messages.success(request, "Tag eliminado.")
             return redirect('admin_panel')
 
-        # Crear FAQ
         elif 'create_faq' in request.POST:
             f_form = FAQForm(request.POST)
             if f_form.is_valid():
@@ -227,7 +229,6 @@ def admin_panel(request):
                 return redirect('admin_panel')
             faq_form = f_form
 
-        # Eliminar FAQ
         elif 'delete_faq_id' in request.POST:
             faq_to_delete = get_object_or_404(FAQ, id=request.POST['delete_faq_id'])
             faq_to_delete.delete()
@@ -236,7 +237,9 @@ def admin_panel(request):
 
     return render(request, 'admin_panel.html', {
         'help_docs': page_docs,
+        'paginator': paginator,
         'tags': tags,
+        'filter_tag': filter_tag,
         'faqs_list': faqs_list,
         'help_doc_form': help_doc_form,
         'tag_form': tag_form,
