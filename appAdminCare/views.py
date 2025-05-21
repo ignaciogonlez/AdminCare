@@ -1,3 +1,5 @@
+# app/views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -116,7 +118,7 @@ def _docs_por_tag(nombre_tag):
         tag = Tag.objects.get(name__iexact=nombre_tag)
         return HelpDocument.objects.filter(tags=tag)
     except Tag.DoesNotExist:
-        return []
+        return HelpDocument.objects.none()
 
 
 def ayuda_experiencia_familiar(request):
@@ -126,8 +128,29 @@ def ayuda_experiencia_familiar(request):
 
 
 def ayuda_autonomica(request):
+    # Página principal con enlaces a cada comunidad
+    communities = [
+        {'slug': 'andalucia',            'name': 'Andalucía',           'image': 'images/andalucia.jpg'},
+        {'slug': 'aragon',               'name': 'Aragón',              'image': 'images/aragon.jpg'},
+        {'slug': 'asturias',             'name': 'Asturias',            'image': 'images/asturias.jpg'},
+        {'slug': 'canarias',             'name': 'Canarias',            'image': 'images/canarias.jpg'},
+        {'slug': 'cantabria',            'name': 'Cantabria',           'image': 'images/cantabria.jpg'},
+        {'slug': 'castilla-la-mancha',   'name': 'Castilla-La Mancha',  'image': 'images/clm.jpg'},
+        {'slug': 'castilla-y-leon',      'name': 'Castilla y León',     'image': 'images/cyl.jpg'},
+        {'slug': 'cataluna',             'name': 'Cataluña',            'image': 'images/cataluna.jpg'},
+        {'slug': 'ceuta-y-melilla',      'name': 'Ceuta y Melilla',     'image': 'images/ceuta_melilla.jpg'},
+        {'slug': 'comunidad-de-madrid',  'name': 'Comunidad de Madrid', 'image': 'images/madrid.jpg'},
+        {'slug': 'comunidad-valenciana', 'name': 'Comunidad Valenciana','image': 'images/cv.jpg'},
+        {'slug': 'extremadura',          'name': 'Extremadura',         'image': 'images/extremadura.jpg'},
+        {'slug': 'galicia',              'name': 'Galicia',             'image': 'images/galicia.jpg'},
+        {'slug': 'islas-baleares',       'name': 'Islas Baleares',      'image': 'images/baleares.jpg'},
+        {'slug': 'la-rioja',             'name': 'La Rioja',            'image': 'images/rioja.jpg'},
+        {'slug': 'murcia',               'name': 'Murcia',              'image': 'images/murcia.jpg'},
+        {'slug': 'navarra',              'name': 'Navarra',             'image': 'images/navarra.jpg'},
+        {'slug': 'pais-vasco',           'name': 'País Vasco',          'image': 'images/pais_vasco.jpg'},
+    ]
     return render(request, 'ayudas_autonomica.html', {
-        'docs': _docs_por_tag('autonomica')
+        'communities': communities
     })
 
 
@@ -141,6 +164,80 @@ def ayuda_privada(request):
     return render(request, 'ayudas_privada.html', {
         'docs': _docs_por_tag('privada')
     })
+
+
+# Vistas por cada comunidad autónoma: filtran HelpDocument por tags 'autonomica' + '<slug>'
+def ayuda_andalucia(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='andalucia')
+    return render(request, 'ayuda_andalucia.html', {'docs': docs})
+
+def ayuda_aragon(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='aragon')
+    return render(request, 'ayuda_aragon.html', {'docs': docs})
+
+def ayuda_asturias(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='asturias')
+    return render(request, 'ayuda_asturias.html', {'docs': docs})
+
+def ayuda_canarias(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='canarias')
+    return render(request, 'ayuda_canarias.html', {'docs': docs})
+
+def ayuda_cantabria(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='cantabria')
+    return render(request, 'ayuda_cantabria.html', {'docs': docs})
+
+def ayuda_castilla_la_mancha(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='castilla-la-mancha')
+    return render(request, 'ayuda_castilla_la_mancha.html', {'docs': docs})
+
+def ayuda_castilla_y_leon(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='castilla-y-leon')
+    return render(request, 'ayuda_castilla_y_leon.html', {'docs': docs})
+
+def ayuda_cataluna(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='cataluna')
+    return render(request, 'ayuda_cataluna.html', {'docs': docs})
+
+def ayuda_ceuta_y_melilla(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='ceuta-y-melilla')
+    return render(request, 'ayuda_ceuta_y_melilla.html', {'docs': docs})
+
+def ayuda_comunidad_de_madrid(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='comunidad-de-madrid')
+    return render(request, 'ayuda_comunidad_de_madrid.html', {'docs': docs})
+
+def ayuda_comunidad_valenciana(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='comunidad-valenciana')
+    return render(request, 'ayuda_comunidad_valenciana.html', {'docs': docs})
+
+def ayuda_extremadura(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='extremadura')
+    return render(request, 'ayuda_extremadura.html', {'docs': docs})
+
+def ayuda_galicia(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='galicia')
+    return render(request, 'ayuda_galicia.html', {'docs': docs})
+
+def ayuda_islas_baleares(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='islas-baleares')
+    return render(request, 'ayuda_islas_baleares.html', {'docs': docs})
+
+def ayuda_la_rioja(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='la-rioja')
+    return render(request, 'ayuda_la_rioja.html', {'docs': docs})
+
+def ayuda_murcia(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='murcia')
+    return render(request, 'ayuda_murcia.html', {'docs': docs})
+
+def ayuda_navarra(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='navarra')
+    return render(request, 'ayuda_navarra.html', {'docs': docs})
+
+def ayuda_pais_vasco(request):
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='pais-vasco')
+    return render(request, 'ayuda_pais_vasco.html', {'docs': docs})
 
 
 def login_view(request):
@@ -172,14 +269,14 @@ def register_view(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def admin_panel(request):
-    # 1) Filtrado por etiqueta
+    # Filtrado por etiqueta
     filter_tag = request.GET.get('filter_tag')
     if filter_tag:
         docs_qs = HelpDocument.objects.filter(tags__id=filter_tag).order_by('-id')
     else:
         docs_qs = HelpDocument.objects.all().order_by('-id')
 
-    # 2) Paginación sobre la QS filtrada
+    # Paginación
     paginator = Paginator(docs_qs, 20)
     page_number = request.GET.get('page')
     page_docs = paginator.get_page(page_number)

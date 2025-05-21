@@ -1,0 +1,49 @@
+{# templates/ayuda_cantabria.html #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ayuda Cantabria – AdminCare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h1 class="mb-4">Ayuda Cantabria</h1>
+  <p>Aquí se listan los documentos que tengan los tags <code>autonomica</code> y <code>cantabria</code>.</p>
+  <hr/>
+  <h2 class="mt-4 mb-3">Mis documentos:</h2>
+  <ul class="documents-list">
+    {% for doc in docs %}
+      <li class="document-item">
+        <div class="doc-preview text-center mb-3">
+          {% if doc.cover %}
+            <a href="{{ doc.file.url }}" target="_blank">
+              <img
+                src="{{ doc.cover.url }}"
+                alt="Portada de {{ doc.title }}"
+                class="img-fluid doc-thumbnail"
+              >
+            </a>
+          {% else %}
+            <a
+              href="{{ doc.file.url }}"
+              target="_blank"
+              class="btn btn-outline-secondary"
+            >
+              Ver/Descargar
+            </a>
+          {% endif %}
+        </div>
+        <div class="doc-details d-flex justify-content-between align-items-center">
+          <div class="doc-info">
+            <strong>{{ doc.title }}</strong><br>
+            {% if doc.uploaded_at %}
+              <small class="text-muted">{{ doc.uploaded_at|date:"d/m/Y H:i" }}</small>
+            {% endif %}
+          </div>
+        </div>
+      </li>
+    {% empty %}
+      <li class="document-item">No hay documentos de Andalucía disponibles.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
