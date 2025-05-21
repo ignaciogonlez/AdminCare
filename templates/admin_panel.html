@@ -6,56 +6,28 @@
 
 <hr/>
 
-{# 1) Formulario Crear Documento de Ayuda #}
+{# 1) Crear Nuevo Documento de Ayuda #}
 <section>
   <h2>Crear Nuevo Documento de Ayuda</h2>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="card" style="padding:1rem; margin-bottom:1rem;">
-
-      {# Errores no asociados a un campo concreto #}
-      {% if help_doc_form.non_field_errors %}
-        <ul class="errorlist">
-          {% for err in help_doc_form.non_field_errors %}
-            <li>{{ err }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-
+      {{ help_doc_form.non_field_errors }}
       <p>
         {{ help_doc_form.title.label_tag }}<br>
-        {{ help_doc_form.title }}
-        {% if help_doc_form.title.errors %}
-          <ul class="errorlist">
-            {% for err in help_doc_form.title.errors %}
-              <li>{{ err }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
+        {{ help_doc_form.title }}<br>
+        {{ help_doc_form.title.errors }}
       </p>
       <p>
         {{ help_doc_form.file.label_tag }}<br>
-        {{ help_doc_form.file }}
-        {% if help_doc_form.file.errors %}
-          <ul class="errorlist">
-            {% for err in help_doc_form.file.errors %}
-              <li>{{ err }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
+        {{ help_doc_form.file }}<br>
+        {{ help_doc_form.file.errors }}
       </p>
       <p>
         {{ help_doc_form.tags.label_tag }}<br>
-        {{ help_doc_form.tags }}
-        {% if help_doc_form.tags.errors %}
-          <ul class="errorlist">
-            {% for err in help_doc_form.tags.errors %}
-              <li>{{ err }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
+        {{ help_doc_form.tags }}<br>
+        {{ help_doc_form.tags.errors }}
       </p>
-
       <button type="submit" name="create_helpdoc" class="btn">Crear Documento de Ayuda</button>
     </div>
   </form>
@@ -63,7 +35,7 @@
 
 <hr/>
 
-{# 2) Desplegables para Documentos de Ayuda por etiqueta #}
+{# 2) Gestionar Documentos de Ayuda (paginados) #}
 <section>
   <h2>Gestionar Documentos de Ayuda</h2>
   {% for tag in tags %}
@@ -76,8 +48,8 @@
         {% if tag in hd.tags.all %}
         <li style="margin-bottom:0.5rem;">
           <strong>{{ hd.title }}</strong>
-          {% if hd.file %}<br>
-            <a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
+          {% if hd.file %}
+            <br><a href="{{ hd.file.url }}" target="_blank">Descargar/Ver Archivo</a>
           {% endif %}
           <form method="POST" style="display:inline;">
             {% csrf_token %}
@@ -90,22 +62,33 @@
     </ul>
   </details>
   {% endfor %}
+
+  {# Navegación de pági­nas #}
+  {% if help_docs.has_other_pages %}
+  <nav style="margin:1rem 0; text-align:center;">
+    {% if help_docs.has_previous %}
+      <a href="?page={{ help_docs.previous_page_number }}">« Anterior</a>
+    {% endif %}
+    Página {{ help_docs.number }} de {{ help_docs.paginator.num_pages }}
+    {% if help_docs.has_next %}
+      <a href="?page={{ help_docs.next_page_number }}">Siguiente »</a>
+    {% endif %}
+  </nav>
+  {% endif %}
 </section>
 
 <hr/>
 
-{# 3) Formulario Crear Tag #}
+{# 3) Crear Nuevo Tag #}
 <section>
   <h2>Crear Nuevo Tag</h2>
   <form method="POST">
     {% csrf_token %}
     <div class="card" style="padding:1rem; margin-bottom:1rem;">
-
       {{ tag_form.non_field_errors }}
       {{ tag_form.name.label_tag }}<br>
-      {{ tag_form.name }}
+      {{ tag_form.name }}<br>
       {{ tag_form.name.errors }}
-
       <button type="submit" name="create_tag" class="btn">Crear Tag</button>
     </div>
   </form>
@@ -113,7 +96,7 @@
 
 <hr/>
 
-{# 4) Desplegable lista de Tags #}
+{# 4) Gestionar Tags #}
 <section>
   <h2>Gestionar Tags</h2>
   <details>
@@ -139,25 +122,23 @@
 
 <hr/>
 
-{# 5) Formulario Crear FAQ #}
+{# 5) Crear Nueva FAQ #}
 <section>
   <h2>Crear Nueva FAQ</h2>
   <form method="POST">
     {% csrf_token %}
     <div class="card" style="padding:1rem; margin-bottom:1rem;">
-
       {{ faq_form.non_field_errors }}
       <p>
         {{ faq_form.question.label_tag }}<br>
-        {{ faq_form.question }}
+        {{ faq_form.question }}<br>
         {{ faq_form.question.errors }}
       </p>
       <p>
         {{ faq_form.answer.label_tag }}<br>
-        {{ faq_form.answer }}
+        {{ faq_form.answer }}<br>
         {{ faq_form.answer.errors }}
       </p>
-
       <button type="submit" name="create_faq" class="btn">Crear FAQ</button>
     </div>
   </form>
@@ -165,7 +146,7 @@
 
 <hr/>
 
-{# 6) Desplegable lista de FAQs #}
+{# 6) Gestionar FAQs #}
 <section>
   <h2>Gestionar FAQs</h2>
   <details>

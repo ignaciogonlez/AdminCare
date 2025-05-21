@@ -1,10 +1,9 @@
-# appAdminCare/views.py
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LogoutView
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .models import Document, FAQ, HelpDocument, Tag
@@ -12,20 +11,14 @@ from .forms import (
     DocumentForm, FAQForm, HelpDocumentForm, TagForm, UserRegisterForm
 )
 
-# PyMuPDF para generar portadas de PDF
-import fitz
+import fitz  # PyMuPDF
 from django.core.files.base import ContentFile
 import os
 
-# ------------------------------------------------- #
-# UTILIDAD: genera miniatura de la primera página   #
-# ------------------------------------------------- #
-
 def generar_portada_pdf(instance):
-    """Recibe un objeto con campos `file` y `cover` y extrae miniatura."""
+    """Recibe un objeto con campos `file` y `cover` y extrae miniatura JPEG."""
     if not instance.file or not instance.file.name.lower().endswith('.pdf'):
         return
-
     if instance.cover and instance.cover.name:
         return
 
@@ -48,9 +41,6 @@ def generar_portada_pdf(instance):
     instance.save(update_fields=['cover'])
 
 
-# ---------------------------------------------------------------------
-# Logout con confirmación
-# ---------------------------------------------------------------------
 class LogoutConfirmView(LogoutView):
     template_name = 'logout_confirm.html'
     next_page = 'index'
@@ -63,10 +53,6 @@ class LogoutConfirmView(LogoutView):
         messages.success(request, "Has cerrado sesión correctamente.")
         return super().post(request, *args, **kwargs)
 
-
-# ---------------------------------------------------------------------
-# Vistas de la aplicación
-# ---------------------------------------------------------------------
 
 def index(request):
     return render(request, 'index.html')
@@ -98,7 +84,9 @@ def documentos(request):
             Q(title__icontains=query), user=request.user
         ).order_by('-uploaded_at')
     else:
-        documents = Document.objects.filter(user=request.user).order_by('-uploaded_at')
+        documents = Document.objects.filter(
+            user=request.user
+        ).order_by('-uploaded_at')
 
     return render(request, 'documentos.html', {
         'form': form,
@@ -117,8 +105,6 @@ def eliminar_documento(request, doc_id):
         messages.error(request, "No tienes permiso para eliminar este documento.")
     return redirect('documentos')
 
-
-# ---------------- Sección Ayudas ----------------
 
 def ayudas(request):
     return render(request, 'ayudas.html')
@@ -156,8 +142,6 @@ def ayuda_privada(request):
     })
 
 
-# ---------------- Login / Registro ----------------
-
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -185,21 +169,23 @@ def register_view(request):
     return render(request, 'register.html', {'form': form})
 
 
-# ---------------- Panel de administración interno ----------------
-
 @user_passes_test(lambda u: u.is_staff)
 def admin_panel(request):
-    help_docs    = HelpDocument.objects.all()
-    tags         = Tag.objects.all()
-    faqs_list    = FAQ.objects.all()
+    # Paginación: 20 documentos por página
+    all_docs = HelpDocument.objects.all().order_by('-id')
+    paginator = Paginator(all_docs, 20)
+    page_number = request.GET.get('page')
+    page_docs = paginator.get_page(page_number)
 
-    # inicializamos forms vacíos
+    tags      = Tag.objects.all()
+    faqs_list = FAQ.objects.all()
+
     help_doc_form = HelpDocumentForm()
     tag_form      = TagForm()
     faq_form      = FAQForm()
 
     if request.method == 'POST':
-        # CREAR HelpDocument
+        # Crear HelpDocument
         if 'create_helpdoc' in request.POST:
             hd_form = HelpDocumentForm(request.POST, request.FILES)
             if hd_form.is_valid():
@@ -207,45 +193,41 @@ def admin_panel(request):
                 generar_portada_pdf(new_help)
                 messages.success(request, "Documento de ayuda creado.")
                 return redirect('admin_panel')
-            else:
-                # dejamos el form con errores para mostrar mensajes
-                help_doc_form = hd_form
+            help_doc_form = hd_form
 
-        # ELIMINAR HelpDocument
+        # Eliminar HelpDocument
         elif 'delete_helpdoc_id' in request.POST:
             hd = get_object_or_404(HelpDocument, id=request.POST['delete_helpdoc_id'])
             hd.delete()
             messages.success(request, "Documento de ayuda eliminado.")
             return redirect('admin_panel')
 
-        # CREAR Tag
+        # Crear Tag
         elif 'create_tag' in request.POST:
             t_form = TagForm(request.POST)
             if t_form.is_valid():
                 t_form.save()
                 messages.success(request, "Tag creado.")
                 return redirect('admin_panel')
-            else:
-                tag_form = t_form
+            tag_form = t_form
 
-        # ELIMINAR Tag
+        # Eliminar Tag
         elif 'delete_tag_id' in request.POST:
             t = get_object_or_404(Tag, id=request.POST['delete_tag_id'])
             t.delete()
             messages.success(request, "Tag eliminado.")
             return redirect('admin_panel')
 
-        # CREAR FAQ
+        # Crear FAQ
         elif 'create_faq' in request.POST:
             f_form = FAQForm(request.POST)
             if f_form.is_valid():
                 f_form.save()
                 messages.success(request, "FAQ creada correctamente.")
                 return redirect('admin_panel')
-            else:
-                faq_form = f_form
+            faq_form = f_form
 
-        # ELIMINAR FAQ
+        # Eliminar FAQ
         elif 'delete_faq_id' in request.POST:
             faq_to_delete = get_object_or_404(FAQ, id=request.POST['delete_faq_id'])
             faq_to_delete.delete()
@@ -253,10 +235,10 @@ def admin_panel(request):
             return redirect('admin_panel')
 
     return render(request, 'admin_panel.html', {
-        'help_docs': help_docs,
-        'help_doc_form': help_doc_form,
+        'help_docs': page_docs,
         'tags': tags,
-        'tag_form': tag_form,
         'faqs_list': faqs_list,
+        'help_doc_form': help_doc_form,
+        'tag_form': tag_form,
         'faq_form': faq_form,
     })
