@@ -138,7 +138,7 @@ def ayuda_autonomica(request):
         {'slug': 'castilla_la_mancha',   'name': 'Castilla-La Mancha',  'image': 'images/clm.png'},
         {'slug': 'castilla_y_leon',      'name': 'Castilla y León',     'image': 'images/cyl.png'},
         {'slug': 'cataluna',             'name': 'Cataluña',            'image': 'images/cataluna.png'},
-        {'slug': 'ceuta_y_melilla',      'name': 'Ceuta y Melilla',     'image': 'images/ceuta_melilla.png'},
+        {'slug': 'ceuta_y_melilla',      'name': 'Ceuta y Melilla',     'image': 'images/ceuta_melilla.jpg'},
         {'slug': 'comunidad_de_madrid',  'name': 'Comunidad de Madrid', 'image': 'images/madrid.png'},
         {'slug': 'comunidad_valenciana', 'name': 'Comunidad Valenciana','image': 'images/cv.png'},
         {'slug': 'extremadura',          'name': 'Extremadura',         'image': 'images/extremadura.png'},
