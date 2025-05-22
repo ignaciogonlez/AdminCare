@@ -201,13 +201,13 @@ form button:hover {
 /* 9. Botones                    */
 /* ============================= */
 .btn {
-  display: inline-block;      /* Su ancho ajusta al contenido */
+  display: inline-block;
   background: var(--color-primary);
   color: #fff;
   padding: 0.65rem 1rem;
   border-radius: 0.25rem;
   font-weight: 600;
-  text-align: center;         /* Centrado del texto */
+  text-align: center;
   transition: background 0.2s ease;
 }
 .btn:hover {
@@ -222,7 +222,6 @@ footer {
   color: #fff;
   text-align: center;
   padding: 1rem;
-  margin-top: 2rem;
 }
 
 /* ============================= */
@@ -255,7 +254,7 @@ footer {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: center; /* Centra horizontalmente los ítems */
+  justify-content: center;
 }
 
 .document-item {
@@ -264,8 +263,8 @@ footer {
   border-radius: 0.5rem;
   padding: 1rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  flex: 1 1 280px;   /* Ancho base y flexible */
-  max-width: 300px;  /* No crece más allá de 300px */
+  flex: 1 1 280px;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -274,14 +273,12 @@ footer {
 /* ============================= */
 /* 14. CENTRADO EN LA HOME        */
 /* ============================= */
-/* Sólo en el index, centramos imágenes y botones */
 .home-content img,
 .home-content .btn {
   display: block;
   margin: 1rem auto;
 }
 
-/* Listas centradas pero texto alineado a la izquierda */
 .home-content ul {
   display: inline-block;
   margin: 0 auto 1rem;
@@ -289,7 +286,6 @@ footer {
   padding-left: 1.25rem;
 }
 
-/* Logo final: tamaño moderado en móvil, más grande en pantallas amplias */
 .home-content img.final-logo {
   max-height: 100px;
   width: auto;
@@ -299,11 +295,29 @@ footer {
     max-height: 180px;
   }
 }
-/* Estilos para seccion FAQs */
+
+/* Estilos para sección FAQs */
 .faq-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .faq-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+/* ============================= */
+/* Ajustes para sticky footer    */
+/* ============================= */
+html, body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+main.container {
+  flex: 1;
+}
+footer {
+  margin-top: auto;
 }
