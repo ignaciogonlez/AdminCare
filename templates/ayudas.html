@@ -2,11 +2,73 @@
 {% block title %}Ayudas - TFG{% endblock %}
 
 {% block content %}
-<h1>Página de Ayudas</h1>
-<ul>
-  <li><a href="{% url 'ayuda_experiencia_familiar' %}">Información sobre experiencia familiar</a></li>
-  <li><a href="{% url 'ayuda_autonomica' %}">Información sobre ayuda autonómica</a></li>
-  <li><a href="{% url 'ayuda_estatal' %}">Información sobre ayuda estatal</a></li>
-  <li><a href="{% url 'ayuda_privada' %}">Información sobre ayudas privadas</a></li>
-</ul>
+  <h1>Página de Ayudas</h1>
+
+  <!-- Descripción introductoria -->
+  <p class="intro">
+    Aquí podrás explorar ayudas centradas en enfermedades raras, organizadas por tipo y región. 
+    Recuerda contactar con los servicios sociales para confirmar cualquier información.
+  </p>
+
+  <!-- Barra de búsqueda (no filtra por ahora, solo elemento visual) -->
+  <div class="search-container">
+    <label for="search-input" class="sr-only">Buscar ayudas</label>
+    <input
+      type="text"
+      id="search-input"
+      placeholder="Buscar ayuda por nombre…"
+      aria-label="Buscar ayuda por nombre"
+    />
+  </div>
+
+  <!-- Grid de “cards” -->
+  <div class="cards-container" id="ayudas-cards">
+    <div class="card" role="region" aria-labelledby="card-experiencia-title">
+      <h2 id="card-experiencia-title">Experiencia Familiar</h2>
+      <p>Testimonios y consejos prácticos de otras familias.</p>
+      <a
+        href="{% url 'ayuda_experiencia_familiar' %}"
+        class="card-link"
+        aria-label="Información sobre experiencia familiar"
+      >
+        Ver más
+      </a>
+    </div>
+
+    <div class="card" role="region" aria-labelledby="card-autonomica-title">
+      <h2 id="card-autonomica-title">Ayuda Autonómica</h2>
+      <p>Apoyos específicos de cada comunidad autónoma.</p>
+      <a
+        href="{% url 'ayuda_autonomica' %}"
+        class="card-link"
+        aria-label="Información sobre ayuda autonómica"
+      >
+        Ver más
+      </a>
+    </div>
+
+    <div class="card" role="region" aria-labelledby="card-estatal-title">
+      <h2 id="card-estatal-title">Ayuda Estatal</h2>
+      <p>Como por ejemplo prestaciones, subvenciones, deducciones fiscales…</p>
+      <a
+        href="{% url 'ayuda_estatal' %}"
+        class="card-link"
+        aria-label="Información sobre ayuda estatal"
+      >
+        Ver más
+      </a>
+    </div>
+
+    <div class="card" role="region" aria-labelledby="card-privada-title">
+      <h2 id="card-privada-title">Ayuda Privada</h2>
+      <p>Becas, fundaciones y organizaciones sin ánimo de lucro.</p>
+      <a
+        href="{% url 'ayuda_privada' %}"
+        class="card-link"
+        aria-label="Información sobre ayudas privadas"
+      >
+        Ver más
+      </a>
+    </div>
+  </div>
 {% endblock %}
