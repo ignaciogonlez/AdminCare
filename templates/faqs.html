@@ -5,30 +5,31 @@
 {% block content %}
 <div class="container my-5">
   <h1 class="mb-4 display-5">Preguntas Frecuentes <small class="text-muted">(FAQs)</small></h1>
+
   <div class="accordion shadow-sm" id="faqsAccordion">
     {% for f in faqs %}
-    <div class="accordion-item border-0 mb-3">
-      <h2 class="accordion-header" id="heading{{ loop.index }}">
-        <button
-          class="accordion-button {% if not loop.first %}collapsed{% endif %} bg-white fs-5"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapse{{ loop.index }}"
-          aria-expanded="{% if loop.first %}true{% else %}false{% endif %}"
-          aria-controls="collapse{{ loop.index }}">
-          {{ f.question }}
-        </button>
-      </h2>
-      <div
-        id="collapse{{ loop.index }}"
-        class="accordion-collapse collapse {% if loop.first %}show{% endif %}"
-        aria-labelledby="heading{{ loop.index }}"
-        data-bs-parent="#faqsAccordion">
-        <div class="accordion-body text-gray-700">
-          {{ f.answer|safe }}
+      <div class="accordion-item mb-3">
+        <h2 class="accordion-header" id="heading{{ loop.index }}">
+          <button
+            class="accordion-button {% if not loop.first %}collapsed{% endif %} fs-5"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse{{ loop.index }}"
+            aria-expanded="{% if loop.first %}true{% else %}false{% endif %}"
+            aria-controls="collapse{{ loop.index }}">
+            {{ f.question }}
+          </button>
+        </h2>
+        <div
+          id="collapse{{ loop.index }}"
+          class="accordion-collapse collapse {% if loop.first %}show{% endif %}"
+          aria-labelledby="heading{{ loop.index }}"
+          data-bs-parent="#faqsAccordion">
+          <div class="accordion-body fs-6 text-gray-700">
+            {{ f.answer|safe }}
+          </div>
         </div>
       </div>
-    </div>
     {% endfor %}
   </div>
 </div>
