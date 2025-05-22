@@ -1,74 +1,70 @@
 {% extends 'base.html' %}
-{% block title %}Ayudas - TFG{% endblock %}
+
+{% block title %}Ayudas - adminCare{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Aviso personalizado sin Bootstrap */
+  .help-notice {
+    background-color: var(--color-accent);
+    padding: 1rem;
+    border-left: 4px solid var(--color-secondary);
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+  }
+  .help-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .help-links li {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .help-links li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .help-links li a {
+    display: block;
+    padding: 1rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+  }
+  .help-links li a:hover {
+    color: var(--color-primary);
+  }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="container">
   <h1>Página de Ayudas</h1>
 
-  <!-- Descripción introductoria -->
-  <p class="intro">
-    Aquí podrás explorar ayudas centradas en enfermedades raras, organizadas por tipo y región. 
-    Recuerda contactar con los servicios sociales para confirmar cualquier información.
-  </p>
-
-  <!-- Barra de búsqueda (no filtra por ahora, solo elemento visual) -->
-  <div class="search-container">
-    <label for="search-input" class="sr-only">Buscar ayudas</label>
-    <input
-      type="text"
-      id="search-input"
-      placeholder="Buscar ayuda por nombre…"
-      aria-label="Buscar ayuda por nombre"
-    />
+  <div class="help-notice">
+    <strong>Importante:</strong> Las ayudas se muestran solo a modo informativo. Debes hablar con tu trabajador social y, si él no te ha ofrecido alguna de estas ayudas, coméntalas con él.
   </div>
 
-  <!-- Grid de “cards” -->
-  <div class="cards-container" id="ayudas-cards">
-    <div class="card" role="region" aria-labelledby="card-experiencia-title">
-      <h2 id="card-experiencia-title">Experiencia Familiar</h2>
-      <p>Testimonios y consejos prácticos de otras familias.</p>
-      <a
-        href="{% url 'ayuda_experiencia_familiar' %}"
-        class="card-link"
-        aria-label="Información sobre experiencia familiar"
-      >
-        Ver más
-      </a>
-    </div>
-
-    <div class="card" role="region" aria-labelledby="card-autonomica-title">
-      <h2 id="card-autonomica-title">Ayuda Autonómica</h2>
-      <p>Apoyos específicos de cada comunidad autónoma.</p>
-      <a
-        href="{% url 'ayuda_autonomica' %}"
-        class="card-link"
-        aria-label="Información sobre ayuda autonómica"
-      >
-        Ver más
-      </a>
-    </div>
-
-    <div class="card" role="region" aria-labelledby="card-estatal-title">
-      <h2 id="card-estatal-title">Ayuda Estatal</h2>
-      <p>Como por ejemplo prestaciones, subvenciones, deducciones fiscales…</p>
-      <a
-        href="{% url 'ayuda_estatal' %}"
-        class="card-link"
-        aria-label="Información sobre ayuda estatal"
-      >
-        Ver más
-      </a>
-    </div>
-
-    <div class="card" role="region" aria-labelledby="card-privada-title">
-      <h2 id="card-privada-title">Ayuda Privada</h2>
-      <p>Becas, fundaciones y organizaciones sin ánimo de lucro.</p>
-      <a
-        href="{% url 'ayuda_privada' %}"
-        class="card-link"
-        aria-label="Información sobre ayudas privadas"
-      >
-        Ver más
-      </a>
-    </div>
+  <div class="card">
+    <h2>Tipos de Ayudas</h2>
+    <ul class="help-links">
+      <li>
+        <a href="{% url 'ayuda_experiencia_familiar' %}">Información sobre experiencia familiar</a>
+      </li>
+      <li>
+        <a href="{% url 'ayuda_autonomica' %}">Información sobre ayuda autonómica</a>
+      </li>
+      <li>
+        <a href="{% url 'ayuda_estatal' %}">Información sobre ayuda estatal</a>
+      </li>
+      <li>
+        <a href="{% url 'ayuda_privada' %}">Información sobre ayudas privadas</a>
+      </li>
+    </ul>
   </div>
+</div>
 {% endblock %}
