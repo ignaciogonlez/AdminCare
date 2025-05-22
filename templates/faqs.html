@@ -1,35 +1,16 @@
-{# templates/faqs.html #}
 {% extends 'base.html' %}
-{% block title %}Preguntas Frecuentes (FAQs){% endblock %}
+{% block title %}FAQs{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-  <h1 class="mb-4 display-5">Preguntas Frecuentes <small class="text-muted">(FAQs)</small></h1>
-  <div class="accordion shadow-sm" id="faqsAccordion">
-    {% for f in faqs %}
-    <div class="accordion-item mb-3">
-      <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-        <button
-          class="accordion-button {% if not forloop.first %}collapsed{% endif %} fs-5"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapse{{ forloop.counter }}"
-          aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
-          aria-controls="collapse{{ forloop.counter }}">
-          {{ f.question }}
-        </button>
-      </h2>
-      <div
-        id="collapse{{ forloop.counter }}"
-        class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
-        aria-labelledby="heading{{ forloop.counter }}"
-        data-bs-parent="#faqsAccordion">
-        <div class="accordion-body fs-6">
-          {{ f.answer|safe }}
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-</div>
+<h1>Preguntas Frecuentes (FAQs)</h1>
+
+<ul>
+  {% for f in faqs %}
+    <li>
+      <strong>{{ f.question }}</strong><br>
+      {{ f.answer }}
+    </li>
+    <hr>
+  {% endfor %}
+</ul>
 {% endblock %}
