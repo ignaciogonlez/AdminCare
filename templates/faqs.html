@@ -2,15 +2,16 @@
 {% block title %}FAQs{% endblock %}
 
 {% block content %}
-<h1>Preguntas Frecuentes (FAQs)</h1>
+<section class="faqs-section">
+  <h1 class="faqs-title">Preguntas Frecuentes (FAQs)</h1>
 
-<ul>
-  {% for f in faqs %}
-    <li>
-      <strong>{{ f.question }}</strong><br>
-      {{ f.answer }}
-    </li>
-    <hr>
-  {% endfor %}
-</ul>
+  <div class="faq-cards-container">
+    {% for f in faqs %}
+      <div class="faq-card card">
+        <h3 class="faq-question">{{ f.question }}</h3>
+        <p class="faq-answer">{{ f.answer }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
 {% endblock %}
