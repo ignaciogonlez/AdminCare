@@ -188,11 +188,11 @@ def ayuda_cantabria(request):
     return render(request, 'ayuda_cantabria.html', {'docs': docs})
 
 def ayuda_castilla_la_mancha(request):
-    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='castilla-la-mancha')
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='castilla la mancha')
     return render(request, 'ayuda_castilla_la_mancha.html', {'docs': docs})
 
 def ayuda_castilla_y_leon(request):
-    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='castilla-y-leon')
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='castilla y leon')
     return render(request, 'ayuda_castilla_y_leon.html', {'docs': docs})
 
 def ayuda_cataluna(request):
@@ -200,15 +200,15 @@ def ayuda_cataluna(request):
     return render(request, 'ayuda_cataluna.html', {'docs': docs})
 
 def ayuda_ceuta_y_melilla(request):
-    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='ceuta-y-melilla')
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='ceuta y melilla')
     return render(request, 'ayuda_ceuta_y_melilla.html', {'docs': docs})
 
 def ayuda_comunidad_de_madrid(request):
-    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='comunidad-de-madrid')
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='comunidad de madrid')
     return render(request, 'ayuda_comunidad_de_madrid.html', {'docs': docs})
 
 def ayuda_comunidad_valenciana(request):
-    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='comunidad-valenciana')
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='comunidad valenciana')
     return render(request, 'ayuda_comunidad_valenciana.html', {'docs': docs})
 
 def ayuda_extremadura(request):
@@ -220,11 +220,11 @@ def ayuda_galicia(request):
     return render(request, 'ayuda_galicia.html', {'docs': docs})
 
 def ayuda_islas_baleares(request):
-    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='islas-baleares')
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='islas baleares')
     return render(request, 'ayuda_islas_baleares.html', {'docs': docs})
 
 def ayuda_la_rioja(request):
-    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='la-rioja')
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='la rioja')
     return render(request, 'ayuda_la_rioja.html', {'docs': docs})
 
 def ayuda_murcia(request):
@@ -236,7 +236,7 @@ def ayuda_navarra(request):
     return render(request, 'ayuda_navarra.html', {'docs': docs})
 
 def ayuda_pais_vasco(request):
-    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='pais-vasco')
+    docs = HelpDocument.objects.filter(tags__name='autonomica').filter(tags__name='pais vasco')
     return render(request, 'ayuda_pais_vasco.html', {'docs': docs})
 
 
