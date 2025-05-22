@@ -4,14 +4,14 @@
 
 {% block title %}Ayudas Autonómicas – AdminCare{% endblock %}
 
-{# Inyectamos estilos para la imagen #}
 {% block extra_styles %}
 <style>
-  /* Hace que todas las banderas midan 1.5rem de alto y no se deformen */
-  img.flag-img {
-    height: 1.5rem !important;
+  /* La bandera siempre mide igual que el botón btn-sm (~2rem) */
+  .flag-img {
+    height: 2rem !important;
     width: auto !important;
     object-fit: contain;
+    display: inline-block;
   }
 </style>
 {% endblock %}
@@ -22,16 +22,15 @@
   <div class="row g-4">
     {% for com in communities %}
       <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card h-100 shadow-sm">
+        <div class="card shadow-sm h-100">
           <div class="card-body d-flex flex-column">
             
             {# 1) Nombre arriba #}
             <h5 class="card-title mb-3">{{ com.name }}</h5>
             
-            {# 2) Fila con imagen y botón #}
-            <div class="d-flex justify-content-between align-items-center mt-auto">
+            {# 2) Bandera + botón alineados en la misma línea #}
+            <div class="mt-auto d-flex align-items-center justify-content-between">
               
-              {# Bandera pequeña #}
               <a href="{% url 'ayuda_'|add:com.slug %}">
                 <img
                   src="{% static com.image %}"
@@ -40,7 +39,6 @@
                 >
               </a>
               
-              {# Botón #}
               <a
                 href="{% url 'ayuda_'|add:com.slug %}"
                 class="btn btn-primary btn-sm"
