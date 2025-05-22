@@ -13,106 +13,6 @@
     margin: 1.5rem 0;
     border-radius: 0.25rem;
     font-size: 1rem;
-  }
-  /* Grid de tarjetas de ayuda */
-  .help-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  /* Tarjeta individual */
-  .help-card {
-    background: #fff;
-    padding: 1.5rem;
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-  }
-  .help-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-  }
-  .help-card a {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    height: 100%;
-  }
-  .help-card .icon {
-    margin-bottom: 0.5rem;
-  }
-  .help-card .icon img.flag-icon {
-    width: 48px;
-    height: auto;
-  }
-  .help-card h3 {
-    margin: 0.5rem 0;
-    font-size: 1.25rem;
-    color: var(--color-secondary);
-  }
-  .help-card p {
-    font-size: 0.9rem;
-    color: var(--color-text);
-    line-height: 1.4;
-    margin: 0.5rem 0 0;
-  }
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="container">
-  <h1>Página de Ayudas</h1>
-
-  <div class="help-notice">
-    <strong>Importante:</strong> Las ayudas se muestran solo a modo informativo. Debes hablar con tu trabajador social y, si él no te ha ofrecido alguna de estas ayudas, coméntalas con él.
-  </div>
-
-  <div class="help-grid">
-    <div class="help-card">
-      <a href="{% url 'ayuda_experiencia_familiar' %}">
-        <div class="icon">👪</div>
-        <h3>Experiencia familiar</h3>
-        <p>Espacio donde las familias comparten sus historias reales: cómo consiguieron ayudas de bancos, comunidades o entidades cuando no estaban publicadas en los canales oficiales.</p>
-      </a>
-    </div>
-
-    <div class="help-card">
-      <a href="{% url 'ayuda_autonomica' %}">
-        <div class="icon">🏛️</div>
-        <h3>Ayuda autonómica</h3>
-        <p>Programas y subvenciones específicas de cada comunidad autónoma: adaptaciones de vivienda, ayudas técnicas y servicios de respiro familiar.</p>
-      </a>
-    </div>
-
-    <div class="help-card">
-      <a href="{% url 'ayuda_estatal' %}">
-        <div class="icon">
-          <img src="{% static 'images/es.png' %}" alt="España" class="flag-icon">
-        </div>
-        <h3>Ayuda estatal</h3>
-        <p>Prestaciones nacionales como la seguridad social, becas NEAE, deducciones fiscales y asistencia sanitaria especializada para enfermedades raras.</p>
-      </a>
-    </div>
-
-    <div class="help-card">
-      <a href="{% url 'ayuda_privada' %}">
-        <div class="icon">💼</div{% extends 'base.html' %}
-
-{% block title %}Ayudas - adminCare{% endblock %}
-
-{% block extra_css %}
-<style>
-  /* Aviso informativo */
-  .help-notice {
-    background-color: var(--color-accent);
-    padding: 1rem;
-    border-left: 4px solid var(--color-secondary);
-    margin: 1.5rem 0;
-    border-radius: 0.25rem;
-    font-size: 1rem;
     color: var(--color-text);
   }
   /* Grid de tarjetas de ayuda */
@@ -191,7 +91,7 @@
     <div class="help-card">
       <a href="{% url 'ayuda_estatal' %}">
         <div class="icon">
-          <img src="{% static 'images/flags/es.png' %}" alt="España" class="flag-icon">
+          <img src="{% static 'images/es.png' %}" alt="España" class="flag-icon">
         </div>
         <h3>Ayuda estatal</h3>
         <p>Prestaciones nacionales como la seguridad social, becas NEAE, deducciones fiscales y asistencia sanitaria especializada para enfermedades raras.</p>
@@ -201,14 +101,6 @@
     <div class="help-card">
       <a href="{% url 'ayuda_privada' %}">
         <div class="icon">💼</div>
-        <h3>Ayudas privadas</h3>
-        <p>Fondos y programas de fundaciones y entidades (Mutua Madrileña, “la Caixa”, ONCE, asociaciones de pacientes) para terapias y apoyo.</p>
-      </a>
-    </div>
-  </div>
-</div>
-{% endblock %}
-
         <h3>Ayudas privadas</h3>
         <p>Fondos y programas de fundaciones y entidades (Mutua Madrileña, “la Caixa”, ONCE, asociaciones de pacientes) para terapias y apoyo.</p>
       </a>
