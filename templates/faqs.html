@@ -2,16 +2,16 @@
 {% block title %}FAQs{% endblock %}
 
 {% block content %}
-<section class="faqs-section">
-  <h1 class="faqs-title">Preguntas Frecuentes (FAQs)</h1>
+<div class="container">
+  <h1>Preguntas Frecuentes (FAQs)</h1>
 
-  <div class="faq-cards-container">
+  <div class="faqs-container">
     {% for f in faqs %}
-      <div class="faq-card card">
-        <h3 class="faq-question">{{ f.question }}</h3>
-        <p class="faq-answer">{{ f.answer }}</p>
+      <div class="card faq-card">
+        <h3>{{ f.question }}</h3>
+        <p>{{ f.answer }}</p>
       </div>
     {% endfor %}
   </div>
-</section>
+</div>
 {% endblock %}
