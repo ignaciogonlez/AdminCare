@@ -4,25 +4,22 @@
 
 {% block title %}Ayudas Autonómicas – AdminCare{% endblock %}
 
-{# Inyectamos sólo para esta página #}
 {% block extra_styles %}
 <style>
-  /* Scope: solo dentro del contenedor #ayudas-autonomica */
+  /* Scope sólo para esta página */
   #ayudas-autonomica .flag-img {
-    height: 1.5rem;       /* Igual altura aproximada a btn-sm */
-    width: auto;
+    max-height: 2.2rem !important;  /* No más alto que el botón */
+    width: auto !important;         /* Ancho proporcional */
     object-fit: contain;
     display: inline-block;
   }
-
+  /* Aseguramos que los controles vayan abajo y alineados */
   #ayudas-autonomica .controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: auto;     /* Empuja al fondo si el título ocupa más espacio */
+    margin-top: auto;
   }
-
-  /* Aseguramos que el card-body sea columna flex para usar margin-top:auto */
   #ayudas-autonomica .card-body {
     display: flex;
     flex-direction: column;
@@ -43,7 +40,7 @@
             {# 1) Nombre arriba #}
             <h5 class="card-title mb-3">{{ com.name }}</h5>
 
-            {# 2) Controles (bandera + botón) #}
+            {# 2) Bandera + botón alineados en la misma línea #}
             <div class="controls">
               <a href="{% url 'ayuda_'|add:com.slug %}">
                 <img
