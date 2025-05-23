@@ -215,7 +215,7 @@ form button:hover {
 }
 
 /* ============================= */
-/* 10. Footer                     */
+/* 10. Footer                    */
 /* ============================= */
 footer {
   background: var(--color-secondary);
@@ -225,7 +225,7 @@ footer {
 }
 
 /* ============================= */
-/* 11. Media queries extras       */
+/* 11. Media queries extras      */
 /* ============================= */
 @media (min-width: 992px) {
   .container {
@@ -234,7 +234,7 @@ footer {
 }
 
 /* ============================= */
-/* 12. Ajuste para la imagen de portada (documentos) */
+/* 12. Ajuste imagen portada     */
 /* ============================= */
 .doc-preview img {
   max-width: 120px;
@@ -246,7 +246,7 @@ footer {
 }
 
 /* ============================= */
-/* 13. Estilos para la lista de documentos */
+/* 13. Lista de documentos       */
 /* ============================= */
 .documents-list {
   list-style: none;
@@ -271,7 +271,7 @@ footer {
 }
 
 /* ============================= */
-/* 14. CENTRADO EN LA HOME        */
+/* 14. Home – centrado           */
 /* ============================= */
 .home-content img,
 .home-content .btn {
@@ -306,18 +306,28 @@ footer {
 }
 
 /* ============================= */
-/* Ajustes para sticky footer    */
+/* 15. Sticky footer             */
 /* ============================= */
-html, body {
-  height: 100%;
+html, body { height: 100%; }
+body { display: flex; flex-direction: column; }
+main.container { flex: 1; }
+footer { margin-top: auto; }
+
+/* ============================= */
+/* 16. Neutralizar GRID Bootstrap*/
+/* ============================= */
+/*  Anula el sistema de columnas y filas de Bootstrap en todo el sitio.
+    Así las clases .row y .col-* ya no reducen el ancho a 50 % ni aplican
+    padding lateral.                                            */
+.row {
+  display: block !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
-body {
-  display: flex;
-  flex-direction: column;
-}
-main.container {
-  flex: 1;
-}
-footer {
-  margin-top: auto;
+
+[class*="col-"] {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
