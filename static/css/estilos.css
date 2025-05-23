@@ -314,20 +314,23 @@ main.container { flex: 1; }
 footer { margin-top: auto; }
 
 /* ============================= */
-/* 16. Neutralizar GRID Bootstrap*/
+/* 16-bis. Neutralizar GRID Bootstrap (todos los breakpoints) */
 /* ============================= */
-/*  Anula el sistema de columnas y filas de Bootstrap en todo el sitio.
-    Así las clases .row y .col-* ya no reducen el ancho a 50 % ni aplican
-    padding lateral.                                            */
 .row {
-  display: block !important;
+  display: block !important;        /* sin flex */
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
 
 [class*="col-"] {
-  flex: 0 0 100% !important;
+  flex: 0 0 100% !important;        /* ignora flexbox */
+  width: 100% !important;           /* anula los 50 %, 33 %, … */
   max-width: 100% !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
+}
+
+/* por si algún col- usa float (Bootstrap 4) */
+[class*="col-"] {
+  float: none !important;
 }
