@@ -4,74 +4,90 @@
 {% block title %}Inicio - AdminCare{% endblock %}
 
 {% block content %}
-<div class="home-content container py-5">
-
-  <!-- Cabecera centrada -->
+<div class="home-content container py-5 text-center">
+  
+  <!-- Cabecera -->
   <h1 class="mb-3">Bienvenido a <strong>AdminCare</strong></h1>
   <p class="lead mb-3">
-    AdminCare unifica y organiza toda la información sobre trámites, recursos y experiencias para
-    facilitar tu búsqueda de documentos y datos clave.
+    AdminCare unifica y organiza toda la información sobre trámites, recursos y
+    experiencias para facilitar tu búsqueda de documentos y datos clave.
   </p>
   <img
     src="{% static 'images/favicon_48_transparent.png' %}"
     alt="Logo AdminCare"
-    class="img-fluid"
+    class="img-fluid mb-4"
     style="max-height: 120px;"
   >
 
   <!-- Sección: Documentos Personales -->
-  <div class="row justify-content-center mb-5">
-    <div class="col-12 col-md-6">
-      <h2 class="mb-3">📁 Documentos Personales</h2>
-      <p>Guarda y organiza todos los documentos que necesites presentar:</p>
-      <ul>
-        <li>Informes médicos y diagnósticos</li>
-        <li>Trámites y justificantes previos</li>
-        <li>Comunicaciones y resoluciones oficiales</li>
-      </ul>
-      <div class="alert alert-info mt-3">
-        Para empezar a guardar y gestionar tus documentos, regístrate e inicia sesión.
-      </div>
-      <a href="{% url 'register' %}" class="btn btn-primary mt-3">Regístrate ahora</a>
-      <img
-        src="{% static 'images/documents_icon.png' %}"
-        alt="Icono Repositorio"
-        class="img-fluid"
-        style="max-height: 120px;"
-      >
+  <section class="mb-5">
+    <h2 class="mb-3">📁 Documentos Personales</h2>
+    <p>Guarda y organiza todos los documentos que necesites presentar:</p>
+    <ul class="d-inline-block text-start mb-3" style="padding-left:1.25rem;">
+      <li>Informes médicos y diagnósticos</li>
+      <li>Trámites y justificantes previos</li>
+      <li>Comunicaciones y resoluciones oficiales</li>
+    </ul>
+
+    <!-- Recuadro informativo (en lugar de .alert) -->
+    <div style="
+         background-color: #d1f0ff;
+         border: 1px solid #a0e0ff;
+         border-radius: 0.25rem;
+         padding: 1rem;
+         display: inline-block;
+         margin-bottom: 1rem;
+         text-align: left;
+    ">
+      Para empezar a guardar y gestionar tus documentos,
+      regístrate e inicia sesión.
     </div>
-  </div>
+
+    <!-- Botón + icono -->
+    <div class="mt-3">
+      <a href="{% url 'register' %}" class="btn mt-3">
+        Regístrate ahora
+      </a>
+    </div>
+    <img
+      src="{% static 'images/documents_icon.png' %}"
+      alt="Icono Repositorio"
+      class="img-fluid mt-3"
+      style="max-height: 120px;"
+    >
+  </section>
 
   <!-- Sección: Información de Ayudas -->
-  <div class="row justify-content-center mb-5">
-    <div class="col-12 col-md-6">
-      <h2 class="mb-3">💡 Información de Ayudas</h2>
-      <p>Descubre recursos y testimonios para orientarte en tu búsqueda de apoyos:</p>
-      <ul>
-        <li>Experiencias personales de otras familias</li>
-        <li>Ayudas estatales disponibles</li>
-        <li>Subvenciones autonómicas según tu residencia</li>
-        <li>Opciones de financiación y becas privadas</li>
-      </ul>
-      <a href="{% url 'ayudas' %}" class="btn btn-success mt-3">Ver Ayudas Disponibles</a>
-      <img
-        src="{% static 'images/help_icon.png' %}"
-        alt="Icono Ayudas"
-        class="img-fluid"
-        style="max-height: 120px;"
-      >
+  <section class="mb-5">
+    <h2 class="mb-3">💡 Información de Ayudas</h2>
+    <p>Descubre recursos y testimonios para orientarte en tu búsqueda de apoyos:</p>
+    <ul class="d-inline-block text-start mb-3" style="padding-left:1.25rem;">
+      <li>Experiencias personales de otras familias</li>
+      <li>Ayudas estatales disponibles</li>
+      <li>Subvenciones autonómicas según tu residencia</li>
+      <li>Opciones de financiación y becas privadas</li>
+    </ul>
+
+    <div class="mt-3">
+      <a href="{% url 'ayudas' %}" class="btn mt-3">
+        Ver Ayudas Disponibles
+      </a>
     </div>
-  </div>
+    <img
+      src="{% static 'images/help_icon.png' %}"
+      alt="Icono Ayudas"
+      class="img-fluid mt-3"
+      style="max-height: 120px;"
+    >
+  </section>
 
   <!-- Logo final centrado y más grande -->
-  <div class="row">
-    <div class="col-12 text-center">
-      <img
-        src="{% static 'images/logoLargoCorto.jpg' %}"
-        alt="Logo Apapachando"
-        class="img-fluid final-logo"
-      >
-    </div>
+  <div class="text-center">
+    <img
+      src="{% static 'images/logoLargoCorto.jpg' %}"
+      alt="Logo Apapachando"
+      class="img-fluid final-logo mx-auto"
+    >
   </div>
 
 </div>
