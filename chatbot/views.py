@@ -1,33 +1,49 @@
-import pickle
+import os, pickle
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from sentence_transformers import SentenceTransformer, util
 
-# Cargamos embeddings al inicio
-with open('chatbot/embeddings/ayudas.pkl', 'rb') as f:
-    data = pickle.load(f)
-chunks, emb_chunks = data['chunks'], data['emb']
-modelo = SentenceTransformer('all-MiniLM-L6-v2')
+# Variables globales para recursos
+_chatbot_model = None
+_chunks = None
+_emb_chunks = None
+
+def _load_resources():
+    global _chatbot_model, _chunks, _emb_chunks
+    if _chatbot_model is None:
+        # 1) Cargar embeddings serializados
+        embeddings_path = os.path.join(os.path.dirname(__file__),
+                                       'embeddings', 'ayudas.pkl')
+        with open(embeddings_path, 'rb') as f:
+            data = pickle.load(f)
+        _chunks, _emb_chunks = data['chunks'], data['emb']
+
+        # 2) Import y carga del modelo
+        from sentence_transformers import SentenceTransformer, util
+        _chatbot_model = SentenceTransformer('all-MiniLM-L6-v2')
+        # Guardamos util también
+        _chatbot_model.util = util
 
 class ChatbotAPIView(APIView):
     def post(self, request):
         question = request.data.get('question', '').strip()
         if not question:
-            return Response({'answer': '❗ Por favor, escribe una pregunta.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'answer': '❗ Por favor, escribe una pregunta.'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        # Embed de la pregunta
-        emb_q = modelo.encode(question, convert_to_tensor=True)
-        # Similitudes
-        sims = util.cos_sim(emb_q, emb_chunks)[0]
+        # Asegurarnos de que el modelo y embeddings están cargados
+        _load_resources()
+
+        # Embed pregunta
+        emb_q = _chatbot_model.encode(question, convert_to_tensor=True)
+        # Calcular similitud
+        sims = _chatbot_model.util.cos_sim(emb_q, _emb_chunks)[0]
         best_idx = int(sims.argmax().item())
         score = float(sims[best_idx].item())
 
-        # Guard rail: si no supera umbral, fallback
+        # Guard rails
         if score < 0.5:
-            sugerencia = chunks[best_idx][:60] + '…'
-            return Response({
-                'answer': f"🤖 No estoy seguro de haber entendido. ¿Quizás querías preguntar sobre: «{sugerencia}»?"
-            })
+            sugerencia = _chunks[best_idx][:60] + '…'
+            return Response({'answer': f"🤖 No estoy seguro. ¿Quizás querías preguntar sobre: «{sugerencia}»?"})
 
-        return Response({'answer': chunks[best_idx]})
+        return Response({'answer': _chunks[best_idx]})
