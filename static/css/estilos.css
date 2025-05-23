@@ -321,3 +321,14 @@ main.container {
 footer {
   margin-top: auto;
 }
+
+/* ──────────────────────────────────────────────
+   Info box personalizado 
+   ────────────────────────────────────────────── */
+.info-box {
+  background-color: #e0f7ff;
+  border: 1px solid #b3ecff;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  text-align: left;
+}
