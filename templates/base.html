@@ -55,10 +55,70 @@
     <p>© 2025 - Aplicación adminCare - en colaboración con Apapachando</p>
   </footer>
 
+  <!-- CHATBOT WIDGET -->
+  <div id="chatbot" class="chatbot">
+    <div id="chatbot-header" class="header">🤖 ¿Dudas?</div>
+    <div id="chatbot-body" class="body hidden">
+      <div id="chatbot-messages" class="messages">
+        <div class="bot">Hola 👋 ¿en qué puedo ayudarte?</div>
+      </div>
+      <input id="chatbot-input" type="text" placeholder="Escribe tu pregunta..." />
+    </div>
+  </div>
+
   <script>
+    // menú principal
     const menuToggle = document.getElementById('menuToggle');
     const menu = document.getElementById('menu');
     menuToggle.addEventListener('click', () => menu.classList.toggle('hidden'));
+
+    // chatbot toggle & lógica
+    const cbHeader = document.getElementById('chatbot-header');
+    const cbBody   = document.getElementById('chatbot-body');
+    const cbInput  = document.getElementById('chatbot-input');
+    const cbMsgs   = document.getElementById('chatbot-messages');
+
+    cbHeader.addEventListener('click', () => {
+      cbBody.classList.toggle('hidden');
+      if (!cbBody.classList.contains('hidden')) {
+        cbInput.focus();
+      }
+    });
+
+    cbInput.addEventListener('keyup', async (e) => {
+      if (e.key !== 'Enter') return;
+      const text = cbInput.value.trim();
+      if (!text) return;
+      // añadir mensaje de usuario
+      const userDiv = document.createElement('div');
+      userDiv.className = 'user';
+      userDiv.textContent = text;
+      cbMsgs.appendChild(userDiv);
+      cbInput.value = '';
+      cbMsgs.scrollTop = cbMsgs.scrollHeight;
+
+      // petición al backend
+      try {
+        const res = await fetch('/api/chatbot/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: text })
+        });
+        const { answer } = await res.json();
+        const botDiv = document.createElement('div');
+        botDiv.className = 'bot';
+        botDiv.textContent = answer;
+        cbMsgs.appendChild(botDiv);
+        cbMsgs.scrollTop = cbMsgs.scrollHeight;
+      } catch (err) {
+        const errDiv = document.createElement('div');
+        errDiv.className = 'bot';
+        errDiv.textContent = '⚠️ Error de conexión.';
+        cbMsgs.appendChild(errDiv);
+        cbMsgs.scrollTop = cbMsgs.scrollHeight;
+      }
+    });
   </script>
+
 </body>
 </html>

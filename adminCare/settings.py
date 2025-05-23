@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # propios
     'appAdminCare',
+    'chatbot.apps.ChatbotConfig'
 ]
 
 SITE_ID = 1

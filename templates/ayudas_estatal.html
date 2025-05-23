@@ -1,4 +1,3 @@
-{# ayudas_estatal.html #}
 {% extends 'base.html' %}
 {% load static %}
 
@@ -8,16 +7,9 @@
 <div class="container py-5">
 
   <h1 class="mb-4">Ayuda Estatal</h1>
+  <p>Prestaciones nacionales como la seguridad social, becas NEAE, deducciones fiscales y asistencia sanitaria especializada para enfermedades raras. </p>
 
-  <!-- Párrafo con margen inferior -->
-  <p class="lead text-muted mb-5" style="max-width: 700px; line-height: 1.6;">
-    Prestaciones estatales como la seguridad social, becas NEAE (Necesidades Específicas de
-    Apoyo Educativo), deducciones fiscales y asistencia sanitaria especializada para
-    enfermedades raras.
-  </p>
-
-  <!-- Separador con margen superior e inferior iguales -->
-  <hr class="my-5"/>
+  <hr/>
 
   <h2 class="mt-4 mb-3">Mis documentos estatales:</h2>
   <ul class="documents-list">
@@ -47,10 +39,10 @@
           <div class="doc-info">
             <strong>{{ doc.title }}</strong><br>
             {% if doc.uploaded_at %}
-              <small class="text-muted">{{ doc.uploaded_at|date:"d/m/Y H:i" }}</small>
+            <small class="text-muted">{{ doc.uploaded_at|date:"d/m/Y H:i" }}</small>
             {% endif %}
           </div>
-          <!-- Sin acciones de eliminación -->
+          <!-- Quitamos acciones de eliminación -->
         </div>
       </li>
     {% empty %}
