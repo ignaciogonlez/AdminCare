@@ -24,7 +24,6 @@ path('admin/', admin.site.urls),
 path('', include('appAdminCare.urls')),
 # Auth de Django (login/logout/password-reset…)
 path('accounts/', include('django.contrib.auth.urls')),
-path('', include('chatbot.urls')),
 ]
 
 if settings.DEBUG:
