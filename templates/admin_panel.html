@@ -71,15 +71,27 @@
 
   <!-- Navegación de páginas -->
   {% if help_docs.has_other_pages %}
-  <nav style="margin-top:1rem; text-align:center;">
+  <nav style="
+        margin-top:1rem;
+        text-align:center;
+        background-color:#f5f5f5;
+        padding:0.75rem 0;
+        border-radius:4px;
+    ">
     {% if help_docs.has_previous %}
-      <a href="?page={{ help_docs.previous_page_number }}{% if filter_tag %}&filter_tag={{ filter_tag }}{% endif %}">
+      <a href="?page={{ help_docs.previous_page_number }}{% if filter_tag %}&filter_tag={{ filter_tag }}{% endif %}"
+         style="margin-right:1rem; color:#007bff; text-decoration:none;">
         « Anterior
       </a>
     {% endif %}
-    Página {{ help_docs.number }} de {{ help_docs.paginator.num_pages }}
+
+    <span style="color:#333; font-weight:500;">
+      Página {{ help_docs.number }} de {{ help_docs.paginator.num_pages }}
+    </span>
+
     {% if help_docs.has_next %}
-      <a href="?page={{ help_docs.next_page_number }}{% if filter_tag %}&filter_tag={{ filter_tag }}{% endif %}">
+      <a href="?page={{ help_docs.next_page_number }}{% if filter_tag %}&filter_tag={{ filter_tag }}{% endif %}"
+         style="margin-left:1rem; color:#007bff; text-decoration:none;">
         Siguiente »
       </a>
     {% endif %}
