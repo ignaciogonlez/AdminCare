@@ -11,48 +11,49 @@
     <form method="post">
       {% csrf_token %}
 
+      {# Errores globales (p.ej. "Las contraseñas no coinciden") #}
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {% for err in form.non_field_errors %}
+            <div>{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
       <div class="mb-3">
-        <label for="id_username" class="form-label">Nombre de usuario:</label>
-        <input
-          type="text"
-          name="username"
-          id="id_username"
-          class="form-control"
-          required
-        >
+        {{ form.username.label_tag }}
+        {{ form.username.as_widget(attrs={"class":"form-control"}) }}
+        {% for err in form.username.errors %}
+          <div class="text-danger small">{{ err }}</div>
+        {% endfor %}
       </div>
 
       <div class="mb-3">
-        <label for="id_email" class="form-label">Correo electrónico:</label>
-        <input
-          type="email"
-          name="email"
-          id="id_email"
-          class="form-control"
-          required
-        >
+        {{ form.email.label_tag }}
+        {{ form.email.as_widget(attrs={"class":"form-control"}) }}
+        {% for err in form.email.errors %}
+          <div class="text-danger small">{{ err }}</div>
+        {% endfor %}
       </div>
 
       <div class="mb-3">
-        <label for="id_password1" class="form-label">Contraseña:</label>
-        <input
-          type="password"
-          name="password1"
-          id="id_password1"
-          class="form-control"
-          required
-        >
+        {{ form.password1.label_tag }}
+        {{ form.password1.as_widget(attrs={"class":"form-control"}) }}
+        {# Aquí se muestra la ayuda con los requisitos #}
+        {% if form.password1.help_text %}
+          <small class="form-text text-muted">{{ form.password1.help_text|safe }}</small>
+        {% endif %}
+        {% for err in form.password1.errors %}
+          <div class="text-danger small">{{ err }}</div>
+        {% endfor %}
       </div>
 
       <div class="mb-3">
-        <label for="id_password2" class="form-label">Confirmar contraseña:</label>
-        <input
-          type="password"
-          name="password2"
-          id="id_password2"
-          class="form-control"
-          required
-        >
+        {{ form.password2.label_tag }}
+        {{ form.password2.as_widget(attrs={"class":"form-control"}) }}
+        {% for err in form.password2.errors %}
+          <div class="text-danger small">{{ err }}</div>
+        {% endfor %}
       </div>
 
       <button type="submit" class="btn btn-primary w-100">

@@ -1,9 +1,16 @@
-# appAdminCare/forms.py – versión sin campo “Resumen”
+# app/forms.py
 
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.password_validation import (
+    validate_password,
+    password_validators_help_text_html,
+)
 from django.core.exceptions import ValidationError
+
 from .models import FAQ, Document, HelpDocument, Tag
+
 
 class FAQForm(forms.ModelForm):
     class Meta:
@@ -18,6 +25,7 @@ class FAQForm(forms.ModelForm):
             'answer': '',
         }
 
+
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
@@ -30,6 +38,7 @@ class DocumentForm(forms.ModelForm):
             'title': '',
             'file': '',
         }
+
 
 class HelpDocumentForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
@@ -52,6 +61,7 @@ class HelpDocumentForm(forms.ModelForm):
             'file': '',
         }
 
+
 class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
@@ -63,39 +73,42 @@ class TagForm(forms.ModelForm):
             'name': '',
         }
 
-class UserRegisterForm(forms.ModelForm):
+
+class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(
         required=True,
         label="Correo electrónico",
         error_messages={'required': 'El correo electrónico es obligatorio.'}
     )
-    password = forms.CharField(
-        widget=forms.PasswordInput,
-        label="Contraseña"
-    )
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password1', 'password2']
         labels = {
             'username': 'Nombre de usuario',
             'email': 'Correo electrónico',
+            'password1': 'Contraseña',
+            'password2': 'Confirmar contraseña',
         }
         help_texts = {
             'username': '',
             'email': '',
         }
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if not email:
-            raise ValidationError("El correo electrónico es obligatorio.")
-        return email
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Mostrar los requisitos de contraseña heredados de AUTH_PASSWORD_VALIDATORS
+        self.fields['password1'].help_text = password_validators_help_text_html()
+
+    def clean_password1(self):
+        password1 = self.cleaned_data.get('password1')
+        # Aplica los validadores configurados en settings.AUTH_PASSWORD_VALIDATORS
+        validate_password(password1, self.instance)
+        return password1
 
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
-        user.set_password(self.cleaned_data['password'])
         if commit:
             user.save()
         return user
