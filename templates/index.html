@@ -23,17 +23,6 @@
 
   <!-- Sección Documentos Personales -->
   <section class="mb-5">
-    <!-- Icono centrado -->
-    <div class="text-center mb-4">
-      <img
-        src="{% static 'images/documents_icon.png' %}"
-        alt="Icono Documentos Personales"
-        class="img-fluid"
-        style="max-height:120px;"
-      >
-    </div>
-
-    <!-- Contenido con ancho máximo y texto LEFT -->
     <div class="mx-auto" style="max-width:600px;">
       <h2 class="h4 mb-3">📁 Documentos Personales</h2>
       <p class="mb-3">Guarda y organiza todos los documentos que necesites presentar:</p>
@@ -47,25 +36,26 @@
         Para empezar a guardar y gestionar tus documentos, regístrate e inicia sesión.
       </div>
 
-      <div class="text-center">
+      <div class="text-center mb-4">
         <a href="{% url 'register' %}" class="btn">
           Regístrate ahora
         </a>
+      </div>
+
+      <!-- Icono al final -->
+      <div class="text-center">
+        <img
+          src="{% static 'images/documents_icon.png' %}"
+          alt="Icono Documentos Personales"
+          class="img-fluid"
+          style="max-height:120px;"
+        >
       </div>
     </div>
   </section>
 
   <!-- Sección Información de Ayudas -->
   <section class="mb-5">
-    <div class="text-center mb-4">
-      <img
-        src="{% static 'images/help_icon.png' %}"
-        alt="Icono Ayudas"
-        class="img-fluid"
-        style="max-height:120px;"
-      >
-    </div>
-
     <div class="mx-auto" style="max-width:600px;">
       <h2 class="h4 mb-3">💡 Información de Ayudas</h2>
       <p class="mb-3">
@@ -78,10 +68,20 @@
         <li>Opciones de financiación y becas privadas</li>
       </ul>
 
-      <div class="text-center">
+      <div class="text-center mb-4">
         <a href="{% url 'ayudas' %}" class="btn">
           Ver Ayudas Disponibles
         </a>
+      </div>
+
+      <!-- Icono al final -->
+      <div class="text-center">
+        <img
+          src="{% static 'images/help_icon.png' %}"
+          alt="Icono Ayudas"
+          class="img-fluid"
+          style="max-height:120px;"
+        >
       </div>
     </div>
   </section>
