@@ -1,365 +1,182 @@
 /* ============================= */
 /* 1. Variables y Reset          */
 /* ============================= */
-:root {
-  --color-primary: #2CAAA2;
-  --color-secondary: #264653;
-  --color-accent: #e9c46a;
-  --color-background: #f5f5f5;
-  --color-text: #333;
+:root{
+  --color-primary:#2CAAA2;
+  --color-secondary:#264653;
+  --color-accent:#e9c46a;
+  --color-background:#f5f5f5;
+  --color-text:#333;
 
-  --font-size-base: 16px;
-  --font-family-base: "Open Sans", Arial, sans-serif;
+  --font-size-base:16px;
+  --font-family-base:"Open Sans",Arial,sans-serif;
 }
 
 /* Reset rápido */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 /* ============================= */
 /* 2. Estilos globales           */
 /* ============================= */
-html {
-  font-size: var(--font-size-base);
-  scroll-behavior: smooth;
+html{font-size:var(--font-size-base);scroll-behavior:smooth}
+body{
+  font-family:var(--font-family-base);
+  background:var(--color-background);
+  color:var(--color-text);
+  line-height:1.5;-webkit-font-smoothing:antialiased
 }
-
-body {
-  font-family: var(--font-family-base);
-  background: var(--color-background);
-  color: var(--color-text);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  margin-bottom: 1rem;
-  line-height: 1.3;
-}
+a{color:var(--color-primary);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4,h5,h6{margin-bottom:1rem;line-height:1.3}
 
 /* ============================= */
 /* 3. Cabecera y Navegación      */
 /* ============================= */
-header {
-  background-color: var(--color-primary);
-  border-bottom: 4px solid var(--color-secondary);
-  padding: 1rem;
-  position: relative;
+header{
+  background-color:var(--color-primary);
+  border-bottom:4px solid var(--color-secondary);
+  padding:1rem;position:relative
 }
-
-/* Botón hamburguesa */
-.menu-button {
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  font-size: 1.8rem;
-  color: #fff;
-  cursor: pointer;
-  margin: .5rem 1rem;
+.menu-button{
+  background:transparent!important;border:none!important;border-radius:0!important;
+  font-size:1.8rem;color:#fff;cursor:pointer;margin:.5rem 1rem
 }
-.menu-button:focus {
-  outline: none;
+.menu-button:focus{outline:none}
+nav#menu{display:none;background-color:var(--color-primary)}
+nav#menu:not(.hidden){display:block}
+nav ul{
+  list-style:none;display:flex;flex-direction:column;gap:.75rem;padding:1rem
 }
-
-/* Nav oculto por defecto y visible al quitarle la clase .hidden */
-nav#menu {
-  display: none;
-  background-color: var(--color-primary);
-}
-nav#menu:not(.hidden) {
-  display: block;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem;
-}
-nav li a {
-  font-weight: 600;
-  color: #fff;
-  transition: opacity 0.2s ease;
-}
-nav li a:hover {
-  opacity: 0.8;
-}
-
-@media (min-width: 768px) {
-  nav ul {
-    flex-direction: row;
-    justify-content: center;
-  }
-  nav ul li {
-    margin: 0 1rem;
-  }
+nav li a{font-weight:600;color:#fff;transition:opacity .2s ease}
+nav li a:hover{opacity:.8}
+@media (min-width:768px){
+  nav ul{flex-direction:row;justify-content:center}
+  nav ul li{margin:0 1rem}
 }
 
 /* ============================= */
-/* 4. Enlaces de login/logout    */
+/* 4. Enlaces login/logout       */
 /* ============================= */
-.login-button {
-  position: absolute;
-  top: 50%;
-  right: 1rem;
-  transform: translateY(-50%);
-  background: var(--color-secondary);
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  text-decoration: none;
+.login-button{
+  position:absolute;top:50%;right:1rem;transform:translateY(-50%);
+  background:var(--color-secondary);color:#fff;padding:.5rem 1rem;border-radius:.25rem
 }
 
 /* ============================= */
 /* 5. Contenedor principal       */
 /* ============================= */
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 1.5rem auto;
-}
+.container{width:90%;max-width:1200px;margin:1.5rem auto}
 
 /* ============================= */
-/* 6. Secciones y bloques        */
+/* 6. Secciones                  */
 /* ============================= */
-section {
-  margin-bottom: 2rem;
-}
-section h2 {
-  margin-bottom: 1rem;
-  color: var(--color-secondary);
-}
+section{margin-bottom:2rem}
+section h2{margin-bottom:1rem;color:var(--color-secondary)}
 
 /* ============================= */
-/* 7. Tarjetas (cards)           */
+/* 7. Tarjetas                   */
 /* ============================= */
-.card {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+.card{
+  background:#fff;border:1px solid #ddd;border-radius:.5rem;padding:1rem;
+  margin-bottom:1rem;box-shadow:0 2px 6px rgba(0,0,0,.05)
 }
-.card h3 {
-  margin-bottom: 0.5rem;
-}
-.card p {
-  margin-bottom: 0.5rem;
-}
+.card h3{margin-bottom:.5rem}
+.card p{margin-bottom:.5rem}
 
 /* ============================= */
 /* 8. Formularios                */
 /* ============================= */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 2rem;
+form{
+  display:flex;flex-direction:column;gap:1rem;
+  background:#fff;border:1px solid #eee;border-radius:.5rem;padding:1rem;
+  margin-bottom:2rem
 }
-form label {
-  font-weight: 600;
+form label{font-weight:600}
+form input,form select,form textarea{
+  padding:.5rem;border:1px solid #ccc;border-radius:.25rem
 }
-form input,
-form select,
-form textarea {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
+form button{
+  background:var(--color-primary);color:#fff;font-weight:600;border:none;
+  border-radius:.25rem;padding:.75rem 1rem;cursor:pointer;transition:background .2s ease
 }
-form button {
-  background: var(--color-primary);
-  color: #fff;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.25rem;
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-form button:hover {
-  background: var(--color-secondary);
-}
+form button:hover{background:var(--color-secondary)}
 
 /* ============================= */
-/* 9. Botones                    */
+/* 9. Botones generales          */
 /* ============================= */
-.btn {
-  display: inline-block;
-  background: var(--color-primary);
-  color: #fff;
-  padding: 0.65rem 1rem;
-  border-radius: 0.25rem;
-  font-weight: 600;
-  text-align: center;
-  transition: background 0.2s ease;
+.btn{
+  display:inline-block;background:var(--color-primary);color:#fff;
+  padding:.65rem 1rem;border-radius:.25rem;font-weight:600;text-align:center;
+  transition:background .2s ease
 }
-.btn:hover {
-  background: var(--color-secondary);
-}
+.btn:hover{background:var(--color-secondary)}
 
 /* ============================= */
 /* 10. Footer                    */
 /* ============================= */
-footer {
-  background: var(--color-secondary);
-  color: #fff;
-  text-align: center;
-  padding: 1rem;
+footer{
+  background:var(--color-secondary);color:#fff;text-align:center;padding:1rem;
+  flex-shrink:0;width:100%
 }
 
 /* ============================= */
-/* 11. Media queries extras      */
+/* 11. Media query extra         */
 /* ============================= */
-@media (min-width: 992px) {
-  .container {
-    width: 85%;
-  }
+@media (min-width:992px){.container{width:85%}}
+
+/* ============================= */
+/* 12. Imagen portada documentos */
+/* ============================= */
+.doc-preview img{
+  max-width:120px;max-height:160px;width:auto;height:auto;display:block;margin:0 auto
 }
 
 /* ============================= */
-/* 12. Ajuste para la imagen de portada (documentos) */
+/* 13. Lista de documentos       */
 /* ============================= */
-.doc-preview img {
-  max-width: 120px;
-  max-height: 160px;
-  width: auto;
-  height: auto;
-  display: block;
-  margin: 0 auto;
+.documents-list{
+  list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:1rem;justify-content:center
+}
+.document-item{
+  background:#fff;border:1px solid #ddd;border-radius:.5rem;padding:1rem;
+  box-shadow:0 2px 6px rgba(0,0,0,.05);flex:1 1 280px;max-width:300px;
+  display:flex;flex-direction:column;justify-content:space-between
 }
 
 /* ============================= */
-/* 13. Estilos para la lista de documentos */
+/* 14. Home: centrado imágenes   */
 /* ============================= */
-.documents-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-}
-.document-item {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  flex: 1 1 280px;
-  max-width: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
+.home-content img,.home-content .btn{display:block;margin:1rem auto}
+.home-content ul{display:inline-block;margin:0 auto 1rem;text-align:left;padding-left:1.25rem}
+.home-content img.final-logo{max-height:100px;width:auto}
+@media (min-width:768px){.home-content img.final-logo{max-height:180px}}
+
+/* FAQs */
+.faq-card{transition:transform .2s ease,box-shadow .2s ease}
+.faq-card:hover{transform:translateY(-4px);box-shadow:0 8px 16px rgba(0,0,0,.12)}
 
 /* ============================= */
-/* 14. CENTRADO EN LA HOME       */
+/* 15. Sticky footer foundation  */
 /* ============================= */
-.home-content img,
-.home-content .btn {
-  display: block;
-  margin: 1rem auto;
-}
-.home-content ul {
-  display: inline-block;
-  margin: 0 auto 1rem;
-  text-align: left;
-  padding-left: 1.25rem;
-}
-.home-content img.final-logo {
-  max-height: 100px;
-  width: auto;
-}
-@media (min-width: 768px) {
-  .home-content img.final-logo {
-    max-height: 180px;
-  }
-}
+html,body{height:100%}
+body{display:flex;flex-direction:column;min-height:100vh}
+main.container{flex:1}
 
-/* Estilos para sección FAQs */
-.faq-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.faq-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
-}
-
-/* ============================= */
-/* Ajustes para sticky footer    */
-/* ============================= */
-html, body {
-  height: 100%;
-}
-body {
-  display: flex;
-  flex-direction: column;
-}
-main.container {
-  flex: 1;
-}
-footer {
-  margin-top: auto;
-}
-
-/* ────────────────────────────────────────────── */
-/* Info box personalizado                       */
-/* ────────────────────────────────────────────── */
-.info-box {
-  background-color: #e0f7ff;
-  border: 1px solid #b3ecff;
-  border-radius: 0.25rem;
-  padding: 1rem;
-  text-align: left;
+/* ───────────────────────────── */
+/* 16. Info box                  */
+/* ───────────────────────────── */
+.info-box{
+  background:#e0f7ff;border:1px solid #b3ecff;border-radius:.25rem;
+  padding:1rem;text-align:left
 }
 
 /* ======================================================
-   17. Form-fix + Sticky footer  (solo afecta a formularios)
+   17. Ajuste formularios & footer
    ====================================================== */
 
-/* El body se convierte en flex-column para que el footer
-   pueda “empujarse” al borde inferior */
-html, body {
-  height: 100%;
-}
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* El <main class="container"> ocupa el espacio libre */
-main.container {
-  flex: 1 0 auto;
-}
-
-/* Limita y centra solo los <form> que estén dentro de <main> */
-main.container form {
-  width: 100%;
-  max-width: 400px;
-  margin: 2rem auto;
-  box-sizing: border-box;
-}
-
-/* Footer siempre pegado al borde inferior */
-footer {
-  flex-shrink: 0;
-  width: 100%;
+/* Formulario centrado horizontalmente (sin límite de ancho) */
+main.container form{
+  width:100%;
+  margin:2rem auto;
+  box-sizing:border-box
 }
