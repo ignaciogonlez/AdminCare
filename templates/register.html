@@ -5,13 +5,12 @@
 {% block content %}
 <div class="row justify-content-center py-5">
   <div class="col-12 col-md-6">
-
     <h1 class="mb-4 text-center">Registro de Usuario</h1>
 
     <form method="post">
       {% csrf_token %}
 
-      {# Errores globales (p.ej. "Las contraseñas no coinciden") #}
+      {# errores globales (p. ej. contraseñas no coinciden) #}
       {% if form.non_field_errors %}
         <div class="alert alert-danger">
           {% for err in form.non_field_errors %}
@@ -20,26 +19,28 @@
         </div>
       {% endif %}
 
+      {# username #}
       <div class="mb-3">
         {{ form.username.label_tag }}
-        {{ form.username.as_widget(attrs={"class":"form-control"}) }}
+        {{ form.username }}
         {% for err in form.username.errors %}
           <div class="text-danger small">{{ err }}</div>
         {% endfor %}
       </div>
 
+      {# email #}
       <div class="mb-3">
         {{ form.email.label_tag }}
-        {{ form.email.as_widget(attrs={"class":"form-control"}) }}
+        {{ form.email }}
         {% for err in form.email.errors %}
           <div class="text-danger small">{{ err }}</div>
         {% endfor %}
       </div>
 
+      {# password1 #}
       <div class="mb-3">
         {{ form.password1.label_tag }}
-        {{ form.password1.as_widget(attrs={"class":"form-control"}) }}
-        {# Aquí se muestra la ayuda con los requisitos #}
+        {{ form.password1 }}
         {% if form.password1.help_text %}
           <small class="form-text text-muted">{{ form.password1.help_text|safe }}</small>
         {% endif %}
@@ -48,19 +49,17 @@
         {% endfor %}
       </div>
 
+      {# password2 #}
       <div class="mb-3">
         {{ form.password2.label_tag }}
-        {{ form.password2.as_widget(attrs={"class":"form-control"}) }}
+        {{ form.password2 }}
         {% for err in form.password2.errors %}
           <div class="text-danger small">{{ err }}</div>
         {% endfor %}
       </div>
 
-      <button type="submit" class="btn btn-primary w-100">
-        Registrarse
-      </button>
+      <button type="submit" class="btn btn-primary w-100">Registrarse</button>
     </form>
-
   </div>
 </div>
 {% endblock %}
