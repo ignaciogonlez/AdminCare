@@ -18,15 +18,23 @@
   {% block extra_css %}{% endblock %}
 
   <style>
-    .menu-button{
-      background:transparent;
-      border:none;
-      font-size:1.8rem;
-      color:#fff;
-      cursor:pointer;
-      margin:.5rem 1rem;
+    .menu-button {
+      background: transparent;
+      border: none;
+      font-size: 1.8rem;
+      color: #fff;
+      cursor: pointer;
+      margin: .5rem 1rem;
     }
-    .menu-button:focus{ outline:none }
+    .menu-button:focus {
+      outline: none;
+    }
+
+    /* Reducir margen top de los títulos dentro del main */
+    main h1,
+    main h2 {
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -55,8 +63,8 @@
     </div>
   </header>
 
-  <!-- Top padding ↓ se reduce de 3 rem (py-5) a 1 rem (pt-3) -->
-  <main class="container flex-fill pt-3 pb-5">
+  <!-- padding-top muy reducido: solo 0.5rem -->
+  <main class="container flex-fill pt-1 pb-5">
     {% block content %}{% endblock %}
   </main>
 

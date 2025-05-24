@@ -22,11 +22,14 @@ from .forms import (
 from .models import Document, FAQ, HelpDocument, Tag
 
 
+HELP_PAGE_SIZE = 10  # nº de documentos por página para vistas de ayudas
+
+
 # ───────────────────────────────────────────────────────────
 # Utilidades
 # ───────────────────────────────────────────────────────────
 def generar_portada_pdf(instance):
-    """Extrae una miniatura JPEG de la primera página de un PDF y la guarda en `instance.cover`."""
+    """Extrae miniatura JPEG de la primera página de un PDF y la guarda en `instance.cover`."""
     if not instance.file or not instance.file.name.lower().endswith(".pdf"):
         return
     if instance.cover and instance.cover.name:
@@ -49,6 +52,28 @@ def generar_portada_pdf(instance):
     filename = f"{os.path.splitext(os.path.basename(instance.file.name))[0]}_cover.jpg"
     instance.cover.save(filename, ContentFile(portada_bytes))
     instance.save(update_fields=["cover"])
+
+
+def _paginate(request, queryset, per_page=10):
+    """Devuelve un objeto Page según el parámetro ?page= presente en la URL."""
+    paginator = Paginator(queryset, per_page)
+    page_number = request.GET.get("page") or 1
+    return paginator.get_page(page_number)
+
+
+def _docs_por_tag(nombre_tag):
+    """Devuelve queryset de HelpDocument filtrado por nombre de tag (case-insensitive)."""
+    try:
+        tag = Tag.objects.get(name__iexact=nombre_tag)
+        return HelpDocument.objects.filter(tags=tag).order_by("-id")
+    except Tag.DoesNotExist:
+        return HelpDocument.objects.none()
+
+
+def _render_help(request, docs_qs, template_name):
+    """Pequeño helper para no repetir código de paginación + render."""
+    docs_page = _paginate(request, docs_qs, HELP_PAGE_SIZE)
+    return render(request, template_name, {"docs": docs_page})
 
 
 # ───────────────────────────────────────────────────────────
@@ -84,7 +109,7 @@ def documentos(request):
     """
     Gestiona documentos del usuario:
     - Subida (POST)
-    - Búsqueda por título (GET ?q=)
+    - Búsqueda por título (?q=)
     - Paginación (?page=)
     """
     # 1) Subir documento
@@ -100,16 +125,14 @@ def documentos(request):
     else:
         form = DocumentForm()
 
-    # 2) Consulta y filtrado por título
+    # 2) Filtrado / búsqueda
     query = request.GET.get("q", "").strip()
     docs_qs = Document.objects.filter(user=request.user).order_by("-uploaded_at")
     if query:
         docs_qs = docs_qs.filter(title__icontains=query)
 
     # 3) Paginación
-    paginator = Paginator(docs_qs, 10)  # ← cambia 10 por el tamaño de página deseado
-    page_number = request.GET.get("page") or 1
-    documents_page = paginator.get_page(page_number)
+    documents_page = _paginate(request, docs_qs, 10)
 
     return render(
         request,
@@ -124,10 +147,7 @@ def documentos(request):
 
 @login_required
 def eliminar_documento(request, doc_id):
-    """
-    Elimina un documento perteneciente al usuario (o por staff) y redirige conservando
-    los parámetros de paginación y búsqueda.
-    """
+    """Elimina un documento del usuario y redirige manteniendo ?page=&q="""
     doc = get_object_or_404(Document, id=doc_id)
     if doc.user == request.user or request.user.is_staff:
         doc.delete()
@@ -135,7 +155,6 @@ def eliminar_documento(request, doc_id):
     else:
         messages.error(request, "No tienes permiso para eliminar este documento.")
 
-    # Mantener 'page' y 'q' para volver a la misma vista
     page = request.GET.get("page", "1")
     q = request.GET.get("q", "")
     redirect_url = reverse("documentos") + f"?page={page}"
@@ -145,29 +164,29 @@ def eliminar_documento(request, doc_id):
 
 
 # ───────────────────────────────────────────────────────────
-# Otras vistas sencillas
+# Ayudas (vistas con paginación)
 # ───────────────────────────────────────────────────────────
 def ayudas(request):
     return render(request, "ayudas.html")
 
 
-def _docs_por_tag(nombre_tag):
-    try:
-        tag = Tag.objects.get(name__iexact=nombre_tag)
-        return HelpDocument.objects.filter(tags=tag)
-    except Tag.DoesNotExist:
-        return HelpDocument.objects.none()
-
-
 def ayuda_experiencia_familiar(request):
-    return render(
+    return _render_help(
         request,
+        _docs_por_tag("experiencia_familiar"),
         "ayudas_experiencia_familiar.html",
-        {"docs": _docs_por_tag("experiencia_familiar")},
     )
 
 
-# Página principal ayudas autonómicas (con el mapa de CC. AA.)
+def ayuda_estatal(request):
+    return _render_help(request, _docs_por_tag("estatal"), "ayudas_estatal.html")
+
+
+def ayuda_privada(request):
+    return _render_help(request, _docs_por_tag("privada"), "ayudas_privada.html")
+
+
+# Página principal de CC. AA. (no necesita paginar porque solo muestra el mapa)
 def ayuda_autonomica(request):
     communities = [
         {"slug": "andalucia", "name": "Andalucía", "image": "images/andalucia.png"},
@@ -180,34 +199,18 @@ def ayuda_autonomica(request):
             "name": "Castilla-La Mancha",
             "image": "images/clm.png",
         },
-        {
-            "slug": "castilla_y_leon",
-            "name": "Castilla y León",
-            "image": "images/cyl.png",
-        },
+        {"slug": "castilla_y_leon", "name": "Castilla y León", "image": "images/cyl.png"},
         {"slug": "cataluna", "name": "Cataluña", "image": "images/cataluna.png"},
         {
             "slug": "ceuta_y_melilla",
             "name": "Ceuta y Melilla",
             "image": "images/ceuta_melilla.jpg",
         },
-        {
-            "slug": "comunidad_de_madrid",
-            "name": "Comunidad de Madrid",
-            "image": "images/madrid.png",
-        },
-        {
-            "slug": "comunidad_valenciana",
-            "name": "Comunidad Valenciana",
-            "image": "images/cv.png",
-        },
+        {"slug": "comunidad_de_madrid", "name": "Comunidad de Madrid", "image": "images/madrid.png"},
+        {"slug": "comunidad_valenciana", "name": "Comunidad Valenciana", "image": "images/cv.png"},
         {"slug": "extremadura", "name": "Extremadura", "image": "images/extremadura.png"},
         {"slug": "galicia", "name": "Galicia", "image": "images/galicia.png"},
-        {
-            "slug": "islas_baleares",
-            "name": "Islas Baleares",
-            "image": "images/baleares.png",
-        },
+        {"slug": "islas_baleares", "name": "Islas Baleares", "image": "images/baleares.png"},
         {"slug": "la_rioja", "name": "La Rioja", "image": "images/rioja.png"},
         {"slug": "murcia", "name": "Murcia", "image": "images/murcia.png"},
         {"slug": "navarra", "name": "Navarra", "image": "images/navarra.png"},
@@ -216,141 +219,83 @@ def ayuda_autonomica(request):
     return render(request, "ayudas_autonomica.html", {"communities": communities})
 
 
-def ayuda_estatal(request):
-    return render(request, "ayudas_estatal.html", {"docs": _docs_por_tag("estatal")})
+# Helper genérico para las 17 vistas autonómicas
+def _autonomica_view(request, slug, template_name):
+    qs = HelpDocument.objects.filter(tags__name="autonomica").filter(tags__name=slug).order_by("-id")
+    return _render_help(request, qs, template_name)
 
 
-def ayuda_privada(request):
-    return render(request, "ayudas_privada.html", {"docs": _docs_por_tag("privada")})
-
-
-# ───────────────────────────────────────────────────────────
-# Vistas autonómicas individuales (filtran tag 'autonomica' + slug)
-# ───────────────────────────────────────────────────────────
+# Vistas autonómicas individuales
 def ayuda_andalucia(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="andalucia"
-    )
-    return render(request, "ayuda_andalucia.html", {"docs": docs})
+    return _autonomica_view(request, "andalucia", "ayuda_andalucia.html")
 
 
 def ayuda_aragon(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="aragon"
-    )
-    return render(request, "ayuda_aragon.html", {"docs": docs})
+    return _autonomica_view(request, "aragon", "ayuda_aragon.html")
 
 
 def ayuda_asturias(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="asturias"
-    )
-    return render(request, "ayuda_asturias.html", {"docs": docs})
+    return _autonomica_view(request, "asturias", "ayuda_asturias.html")
 
 
 def ayuda_canarias(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="canarias"
-    )
-    return render(request, "ayuda_canarias.html", {"docs": docs})
+    return _autonomica_view(request, "canarias", "ayuda_canarias.html")
 
 
 def ayuda_cantabria(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="cantabria"
-    )
-    return render(request, "ayuda_cantabria.html", {"docs": docs})
+    return _autonomica_view(request, "cantabria", "ayuda_cantabria.html")
 
 
 def ayuda_castilla_la_mancha(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="castilla la mancha"
-    )
-    return render(request, "ayuda_castilla_la_mancha.html", {"docs": docs})
+    return _autonomica_view(request, "castilla la mancha", "ayuda_castilla_la_mancha.html")
 
 
 def ayuda_castilla_y_leon(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="castilla y leon"
-    )
-    return render(request, "ayuda_castilla_y_leon.html", {"docs": docs})
+    return _autonomica_view(request, "castilla y leon", "ayuda_castilla_y_leon.html")
 
 
 def ayuda_cataluna(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="cataluna"
-    )
-    return render(request, "ayuda_cataluna.html", {"docs": docs})
+    return _autonomica_view(request, "cataluna", "ayuda_cataluna.html")
 
 
 def ayuda_ceuta_y_melilla(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="ceuta y melilla"
-    )
-    return render(request, "ayuda_ceuta_y_melilla.html", {"docs": docs})
+    return _autonomica_view(request, "ceuta y melilla", "ayuda_ceuta_y_melilla.html")
 
 
 def ayuda_comunidad_de_madrid(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="comunidad de madrid"
-    )
-    return render(request, "ayuda_comunidad_de_madrid.html", {"docs": docs})
+    return _autonomica_view(request, "comunidad de madrid", "ayuda_comunidad_de_madrid.html")
 
 
 def ayuda_comunidad_valenciana(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="comunidad valenciana"
-    )
-    return render(request, "ayuda_comunidad_valenciana.html", {"docs": docs})
+    return _autonomica_view(request, "comunidad valenciana", "ayuda_comunidad_valenciana.html")
 
 
 def ayuda_extremadura(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="extremadura"
-    )
-    return render(request, "ayuda_extremadura.html", {"docs": docs})
+    return _autonomica_view(request, "extremadura", "ayuda_extremadura.html")
 
 
 def ayuda_galicia(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="galicia"
-    )
-    return render(request, "ayuda_galicia.html", {"docs": docs})
+    return _autonomica_view(request, "galicia", "ayuda_galicia.html")
 
 
 def ayuda_islas_baleares(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="islas baleares"
-    )
-    return render(request, "ayuda_islas_baleares.html", {"docs": docs})
+    return _autonomica_view(request, "islas baleares", "ayuda_islas_baleares.html")
 
 
 def ayuda_la_rioja(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="la rioja"
-    )
-    return render(request, "ayuda_la_rioja.html", {"docs": docs})
+    return _autonomica_view(request, "la rioja", "ayuda_la_rioja.html")
 
 
 def ayuda_murcia(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="murcia"
-    )
-    return render(request, "ayuda_murcia.html", {"docs": docs})
+    return _autonomica_view(request, "murcia", "ayuda_murcia.html")
 
 
 def ayuda_navarra(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="navarra"
-    )
-    return render(request, "ayuda_navarra.html", {"docs": docs})
+    return _autonomica_view(request, "navarra", "ayuda_navarra.html")
 
 
 def ayuda_pais_vasco(request):
-    docs = HelpDocument.objects.filter(tags__name="autonomica").filter(
-        tags__name="pais vasco"
-    )
-    return render(request, "ayuda_pais_vasco.html", {"docs": docs})
+    return _autonomica_view(request, "pais vasco", "ayuda_pais_vasco.html")
 
 
 # ───────────────────────────────────────────────────────────
@@ -376,9 +321,7 @@ def register_view(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data["password"])
             user.save()
-            messages.success(
-                request, "Usuario creado correctamente. Ahora puedes iniciar sesión."
-            )
+            messages.success(request, "Usuario creado correctamente. Ahora puedes iniciar sesión.")
             return redirect("login")
     else:
         form = UserRegisterForm()
@@ -390,17 +333,13 @@ def register_view(request):
 # ───────────────────────────────────────────────────────────
 @user_passes_test(lambda u: u.is_staff)
 def admin_panel(request):
-    # Filtrado por etiqueta
     filter_tag = request.GET.get("filter_tag")
     if filter_tag:
         docs_qs = HelpDocument.objects.filter(tags__id=filter_tag).order_by("-id")
     else:
         docs_qs = HelpDocument.objects.all().order_by("-id")
 
-    # Paginación
-    paginator = Paginator(docs_qs, 20)
-    page_number = request.GET.get("page")
-    page_docs = paginator.get_page(page_number)
+    page_docs = _paginate(request, docs_qs, 20)
 
     tags = Tag.objects.all()
     faqs_list = FAQ.objects.all()
@@ -458,7 +397,6 @@ def admin_panel(request):
         "admin_panel.html",
         {
             "help_docs": page_docs,
-            "paginator": paginator,
             "tags": tags,
             "filter_tag": filter_tag,
             "faqs_list": faqs_list,

@@ -49,6 +49,32 @@
       <li class="document-item">No hay documentos estatales disponibles.</li>
     {% endfor %}
   </ul>
+  {% if docs.has_other_pages %}
+    <nav style="
+          margin-top:1.5rem;
+          text-align:center;
+          background-color:#f5f5f5;
+          padding:0.75rem 0;
+          border-radius:4px;
+      ">
+      {% if docs.has_previous %}
+        <a href="?page={{ docs.previous_page_number }}"
+          style="margin-right:1rem; color:#007bff; text-decoration:none;">
+          « Anterior
+        </a>
+      {% endif %}
 
+      <span style="color:#333; font-weight:500;">
+        Página {{ docs.number }} de {{ docs.paginator.num_pages }}
+      </span>
+
+      {% if docs.has_next %}
+        <a href="?page={{ docs.next_page_number }}"
+          style="margin-left:1rem; color:#007bff; text-decoration:none;">
+          Siguiente »
+        </a>
+      {% endif %}
+    </nav>
+  {% endif %}
 </div>
 {% endblock %}
