@@ -8,12 +8,10 @@
   {% load static %}
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32"
-        href="{% static 'images/favicon-32x32-transparent.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32-transparent.png' %}">
 
   <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Estilos propios -->
   <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
@@ -21,19 +19,20 @@
 
   <style>
     .menu-button{
-      background:transparent;border:none;font-size:1.8rem;color:#fff;
-      cursor:pointer;margin:.5rem 1rem;
+      background:transparent;
+      border:none;
+      font-size:1.8rem;
+      color:#fff;
+      cursor:pointer;
+      margin:.5rem 1rem;
     }
-    .menu-button:focus{outline:none}
+    .menu-button:focus{ outline:none }
   </style>
 </head>
-
 <body class="d-flex flex-column min-vh-100">
 
-  <!-- ───── Header ───── -->
   <header>
     <button id="menuToggle" class="menu-button">☰</button>
-
     <nav id="menu" class="hidden">
       <ul>
         <li><a href="{% url 'index' %}">Inicio</a></li>
@@ -44,7 +43,6 @@
         {% endif %}
       </ul>
     </nav>
-
     <div class="auth-links">
       {% if user.is_authenticated %}
         <a href="{% url 'logout_confirm' %}" class="login-button">Logout</a>
@@ -57,23 +55,19 @@
     </div>
   </header>
 
-  <!-- ───── Contenido principal ───── -->
-  <main class="container flex-fill">
+  <main class="container flex-fill py-5">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- ───── Footer pegado abajo ───── -->
   <footer>
     <p>© 2025 – Aplicación adminCare – en colaboración con Apapachando</p>
   </footer>
 
-  <!-- Bootstrap JS -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const menuToggle = document.getElementById('menuToggle');
-    const menu = document.getElementById('menu');
-    menuToggle.addEventListener('click', () => menu.classList.toggle('hidden'));
+    const menuToggle = document.getElementById('menuToggle'),
+          menu = document.getElementById('menu');
+    menuToggle.addEventListener('click', ()=> menu.classList.toggle('hidden'));
   </script>
 </body>
 </html>
