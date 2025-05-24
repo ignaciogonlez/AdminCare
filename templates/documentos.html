@@ -4,19 +4,21 @@
 {% block title %}Gestión de Documentos - AdminCare{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-12 col-lg-8"><!-- ancho un poco mayor -->
+<div class="row justify-content-center py-5">
+  <div class="col-12 col-lg-8">
 
     <h1 class="mb-4 text-center">Gestión de Documentos</h1>
 
     <!-- Formulario de búsqueda -->
     <form method="GET" class="mb-4 row g-2">
       <div class="col-8">
-        <input type="text"
-               name="q"
-               placeholder="Buscar por título..."
-               value="{{ query|default_if_none:'' }}"
-               class="form-control">
+        <input
+          type="text"
+          name="q"
+          placeholder="Buscar por título..."
+          value="{{ query|default_if_none:'' }}"
+          class="form-control"
+        >
       </div>
       <div class="col-4">
         <button type="submit" class="btn btn-primary w-100">Buscar</button>
@@ -34,7 +36,7 @@
 
     <hr>
 
-    <!-- Listado de documentos -->
+    <!-- Listado de documentos subidos -->
     <h2 class="mt-4 mb-3">Mis documentos:</h2>
     <ul class="documents-list">
       {% for doc in documents %}
@@ -42,13 +44,17 @@
           <div class="doc-preview text-center mb-3">
             {% if doc.cover %}
               <a href="{{ doc.file.url }}" target="_blank">
-                <img src="{{ doc.cover.url }}"
-                     alt="Portada de {{ doc.title }}"
-                     class="img-fluid doc-thumbnail">
+                <img
+                  src="{{ doc.cover.url }}"
+                  alt="Portada de {{ doc.title }}"
+                  class="img-fluid doc-thumbnail"
+                >
               </a>
             {% else %}
-              <a href="{{ doc.file.url }}" target="_blank"
-                 class="btn btn-outline-secondary">
+              <a href="{{ doc.file.url }}"
+                 target="_blank"
+                 class="btn btn-outline-secondary"
+              >
                 Ver/Descargar
               </a>
             {% endif %}
@@ -57,20 +63,19 @@
           <div class="doc-details d-flex justify-content-between align-items-center">
             <div class="doc-info">
               <strong>{{ doc.title }}</strong><br>
-              <small class="text-muted">
-                {{ doc.uploaded_at|date:"d/m/Y H:i" }}
-              </small>
+              <small class="text-muted">{{ doc.uploaded_at|date:"d/m/Y H:i" }}</small>
             </div>
             <div class="doc-actions">
               <form action="{% url 'eliminar_documento' doc.id %}" method="POST">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-link p-0" title="Eliminar">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                       fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M5.5 5.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0
-                             1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0
-                             1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0
-                             1-.5-.5z"/>
+                <button type="submit" class="btn btn-link p-0" title="Eliminar documento">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       width="18" height="18"
+                       fill="currentColor"
+                       viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5
+                             0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 6 9h4a.5.5
+                             0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
                     <path fill-rule="evenodd"
                           d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2
                              2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0
