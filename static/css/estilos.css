@@ -170,13 +170,45 @@ main.container{flex:1}
   padding:1rem;text-align:left
 }
 
+/* (…todo tu CSS anterior sin cambios hasta la sección 17…) */
+
 /* ======================================================
-   17. Ajuste formularios & footer
+   17. Ajuste formularios & sticky-footer
    ====================================================== */
 
-/* Formulario centrado horizontalmente (sin límite de ancho) */
-main.container form{
-  width:100%;
-  margin:2rem auto;
-  box-sizing:border-box
+/* El body es flex-column para empujar el footer al fondo */
+html, body { height: 100%; }
+body{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+/* <main> ocupa el espacio libre entre header y footer     */
+main.container{
+  flex: 1 0 auto;
+}
+
+/* ----------     FORM FIX EN ESCRITORIO     ------------- */
+/* Neutraliza cualquier grid Bootstrap dentro de <main>    */
+main.container .row,
+main.container [class*="col-"]{
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Unifica ancho de todos los formularios                  */
+main.container form{
+  width: 100%;
+  margin: 2rem auto;           /* centrado horizontal      */
+  box-sizing: border-box;
+}
+
+/* ----------     FOOTER SIEMPRE ABAJO     --------------- */
+footer{
+  flex-shrink: 0;
+  width: 100%;
+}
+
+/* (…todo lo que sigue después permanece sin cambios…) */
